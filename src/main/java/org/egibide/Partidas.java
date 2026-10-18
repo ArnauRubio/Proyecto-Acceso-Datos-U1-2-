@@ -1,6 +1,7 @@
 package org.egibide;
 
 import org.egibide.models.Socia;
+import org.egibide.utils.DatabaseConnection;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,10 +13,11 @@ import java.util.List;
 import java.util.Vector;
 
 public class Partidas {
-    private JPanel panelPartidas;
+    JPanel panelPartidas;
     private JLabel nJornada;
     private JTable tablaPartidas;
     private JTable tablaSocias;
+    JPanel panelGestionPartidas;
 
     /**
      * Muestra una JTable que llama a una vista (código del equipo, victorias, derrotas)
@@ -24,12 +26,12 @@ public class Partidas {
      * @param all_socias
      * @param all_partidas
      */
-    public VPartidas(List<Socia> all_socias, List<Partidas> all_partidas) {
+    public Partidas(List<Socia> all_socias, List<Partidas> all_partidas) {
 
         //Tabla Clasificacion
         ResultSet rset;
         try {
-            Statement stmt = GestionBD.conexion.createStatement();
+            Statement stmt = DatabaseConnection.getInstance().getConnection().createStatement();
 
             rset = stmt.executeQuery("SELECT * FROM SOCIAS");
 

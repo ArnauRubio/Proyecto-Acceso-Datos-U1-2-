@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class VGestionSocias {
-    private JPanel panelGestionJug;
+    public JPanel panelSoc;
     private JTable tableGestionSoc;
     private JButton borrarButton;
     private JButton editarButton;
@@ -21,6 +21,7 @@ public class VGestionSocias {
     private JTextField txtNombre;
     private JButton buttonMostrar;
     private JTextPane textPane1;
+    private JPanel panelGestionSoc;
 
     Socia soc = null;
 
@@ -41,11 +42,9 @@ public class VGestionSocias {
                 int id = Integer.parseInt(txtID.getText());
                 //Double salario = Double.parseDouble(txtSalario.getText());
 
-                int id_soc = GestionBD.guardarJugador(id, nombre, apellido);
-                Socia nuevoSoc = new Socia(id_soc, nombre, apellido);
-                if (!all_socias.contains(nuevoSoc)) {
-                    all_socias.add(nuevoSoc);
-                }
+                // int idSoc = GestionBD.guardarJugador(id, nombre, apellido);
+                Socia nuevoSoc = new Socia(id, nombre, apellido, 0, "");
+                all_socias.add(nuevoSoc);
                 JOptionPane.showMessageDialog(null, "Jugador creado correctamente", "Nuevo jugador", JOptionPane.INFORMATION_MESSAGE);
 
                 txtNombre.setText("");
@@ -68,12 +67,11 @@ public class VGestionSocias {
                     soc.setNombre(txtNombre.getText());
                     soc.setApellidos(txtApellido.getText());
                     soc.setId(Integer.parseInt(txtID.getText()));
+                    // GestionBD.actualizarSocia(soc);
 
                     txtNombre.setText("");
                     txtApellido.setText("");
                     txtID.setText("");
-
-                    GestionBD.actualizarSocia(soc);
 
                     tableGestionSoc.setModel(new ModTabla_GesSoc(all_socias));
 
@@ -89,17 +87,11 @@ public class VGestionSocias {
                 if (soc == null) {
                     JOptionPane.showMessageDialog(null, "Busca o muestra (>) un jugador", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    try {
-                        //Si jug.getEquipo() es null entra en catch
+                    if (soc.getAsociacion() != null) {
                         soc.getAsociacion().getSocias().remove(soc);
-                        soc.setAsociacion(null);
-                        all_socias.remove(soc);
-                        GestionBD.borrarJugador(soc);
-                    } catch (NullPointerException ex) {
-                        //Este jugador no tiene equipo, no hay que borrar la relacion
-                        all_socias.remove(soc);
-                        GestionBD.borrarJugador(soc);
                     }
+                    // GestionBD.borrarJugador(soc);
+                    all_socias.remove(soc);
                     txtNombre.setText("");
                     txtApellido.setText("");
                     txtID.setText("");
@@ -158,7 +150,7 @@ public class VGestionSocias {
     public Socia buscar(String filtro, String consulta, List<Socia> all_socias) {
         if (filtro.equals("ID")) {
             for (Socia socia : all_socias) {
-                if (socia.getId(consulta)) {
+                if (String.valueOf(socia.getId()).equals(consulta)) {
                     return socia;
                 }
             }
@@ -178,4 +170,3 @@ public class VGestionSocias {
         return null;
     }
 }
-
