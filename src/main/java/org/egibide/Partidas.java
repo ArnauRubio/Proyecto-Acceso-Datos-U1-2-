@@ -28,7 +28,7 @@ public class Partidas {
      */
     public Partidas(List<Socia> all_socias, List<Partidas> all_partidas) {
 
-        //Tabla Clasificacion
+
         ResultSet rset;
         try {
             Statement stmt = DatabaseConnection.getInstance().getConnection().createStatement();
@@ -61,14 +61,14 @@ public class Partidas {
 
         ResultSetMetaData metaData = rs.getMetaData();
 
-        // names of columns
+
         Vector<String> columnNames = new Vector<String>();
         int columnCount = metaData.getColumnCount();
         for (int column = 1; column <= columnCount; column++) {
             columnNames.add(metaData.getColumnName(column));
         }
 
-        // data of the table
+
         Vector<Vector<Object>> data = new Vector<Vector<Object>>();
         while (rs.next()) {
             Vector<Object> vector = new Vector<Object>();

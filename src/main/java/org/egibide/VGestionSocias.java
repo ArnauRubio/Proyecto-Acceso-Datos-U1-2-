@@ -40,7 +40,7 @@ public class VGestionSocias {
                 String nombre = txtNombre.getText();
                 String apellido = txtApellido.getText();
                 int id = Integer.parseInt(txtID.getText());
-                //Double salario = Double.parseDouble(txtSalario.getText());
+
 
                 // int idSoc = GestionBD.guardarJugador(id, nombre, apellido);
                 Socia nuevoSoc = new Socia(id, nombre, apellido, 0, "");
@@ -60,7 +60,7 @@ public class VGestionSocias {
         editarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //jug se instancia como retorno de buscar();
+
                 if (soc == null) {
                     JOptionPane.showMessageDialog(null, "Busca o muestra (>) una socia", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
@@ -83,7 +83,7 @@ public class VGestionSocias {
         borrarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //jug se instancia como retorno de buscar();
+
                 if (soc == null) {
                     JOptionPane.showMessageDialog(null, "Busca o muestra (>) un jugador", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
