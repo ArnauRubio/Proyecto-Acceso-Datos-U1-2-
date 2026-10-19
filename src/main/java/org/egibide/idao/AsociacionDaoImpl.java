@@ -45,7 +45,7 @@ public class AsociacionDaoImpl implements AsociacionDao {
                 ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query);
 
                 ps.setString(1, asociacion.getNombre());
-                ps.setDate(2, asociacion.getFecha_apertura());
+                ps.setDate(2, (Date) asociacion.getFecha_apertura());
                 ps.setString(3, asociacion.getDireccion());
                 ps.setString(4, asociacion.getCif());
                 ps.setInt(5, asociacion.getId());

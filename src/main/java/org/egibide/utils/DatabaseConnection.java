@@ -17,7 +17,7 @@ public class DatabaseConnection {
             String password = "12345Abcde";
             this.connection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new SQLException("No se encontró el controlador JDBC de MariaDB.", e);
         }
     }
 

@@ -1,6 +1,8 @@
 package org.egibide;
 
 import org.egibide.models.Socia;
+import org.egibide.models.Partida;
+import org.egibide.models.Juego;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +15,7 @@ public class MenuPrincipal {
     private JButton buttonPartidas;
     private JTextArea TAInfo;
 
-    public MenuPrincipal(List<Socia> all_socias, List<Partidas> all_partidas, List<Juegos> all_juegos) {
+    public MenuPrincipal(List<Socia> all_socias, List<Partida> all_partidas, List<Juego> all_juegos) {
 
 
         buttonSocias.addActionListener(new ActionListener() {
@@ -29,7 +31,7 @@ public class MenuPrincipal {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFrame frame = new JFrame("Juegos");
-                frame.setContentPane(new Juegos(all_juegos).panelGestionJuegos);
+                frame.setContentPane(new Juegos(all_juegos, all_socias).panelGestionJuegos);
                 frame.pack();
                 frame.setVisible(true);
             }
@@ -38,7 +40,7 @@ public class MenuPrincipal {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFrame frame = new JFrame("Partidas");
-                frame.setContentPane(new Partidas(all_socias, all_partidas).panelGestionPartidas);
+                frame.setContentPane(new Partidas(all_partidas, all_juegos, all_socias).panelGestionPartidas);
                 frame.pack();
                 frame.setVisible(true);
             }

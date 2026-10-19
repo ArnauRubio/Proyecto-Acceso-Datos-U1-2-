@@ -1,6 +1,7 @@
 package org.egibide.utils;
 
 import org.egibide.models.Partida;
+import org.egibide.models.Socia;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -47,9 +48,19 @@ public class ModTabla_GesPartidas extends AbstractTableModel {
             case 4:
                 return partida.getJugadoresDeseados();
             case 5:
-                return partida.getSocias();
+                if (partida.getSocias().isEmpty()) {
+                    return "Sin jugadoras";
+                }
+                StringBuilder jugadoras = new StringBuilder();
+                for (Socia socia : partida.getSocias()) {
+                    if (jugadoras.length() > 0) {
+                        jugadoras.append(", ");
+                    }
+                    jugadoras.append(socia.getNombre()).append(" ").append(socia.getApellidos());
+                }
+                return jugadoras.toString();
             case 6:
-                return partida.getGanadoras();
+                return partida.getGanadoras().toString();
             default:
                 throw new IndexOutOfBoundsException("Índice de columna no válido: " + columnIndex);
         }
