@@ -16,5 +16,5 @@ public interface SociaDao {
 
     void delete(int id);
 
-    List<Socia> getSociasByAsociacionId(int id_asociacion);
+//    List<Socia> getSociasByAsociacionId(int id_asociacion);
 }

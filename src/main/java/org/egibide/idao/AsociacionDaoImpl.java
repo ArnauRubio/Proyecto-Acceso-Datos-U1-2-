@@ -11,6 +11,23 @@ import java.sql.SQLException;
 
 public class AsociacionDaoImpl implements AsociacionDao {
 
+    public boolean asociacionExists(int id) {
+        String query = "select * from asociacion where id=?";
+        PreparedStatement ps;
+        boolean asociacionExists = false;
+        try {
+            ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                asociacionExists = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return asociacionExists;
+    }
+
     @Override
     public Asociacion getAsociacion(int id) {
         String query = "select * from asociacion where id=?";
@@ -60,6 +77,17 @@ public class AsociacionDaoImpl implements AsociacionDao {
 
     @Override
     public void delete(int id) {
+        String query = "delete from asociacion where id=?";
+        PreparedStatement ps = null;
 
+        try {
+            ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query);
+
+            ps.setInt(1, id);
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

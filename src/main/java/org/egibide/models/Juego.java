@@ -21,7 +21,7 @@ public class Juego {
     private Asociacion asociacion;
     private List<Partida> partidas;
 
-    public Juego(int id, String nombre, String autor, String descripcion, int minJugadores, int maxJugadores, int duracion, String tematica, ModoJuego modoJuego, String localizacion, Socia propietaria, Date fechaAlta, Asociacion asociacion) {
+    public Juego(int id, String nombre, String autor, String descripcion, int minJugadores, int maxJugadores, int duracion, String tematica, ModoJuego modoJuego, String localizacion, Socia propietaria, Date fechaAlta) {
         this.id = id;
         this.nombre = nombre;
         this.autor = autor;
@@ -126,7 +126,7 @@ public class Juego {
         this.propietaria = propietaria;
     }
 
-    public Date getFechaAlta() {
+    public java.sql.Date getFechaAlta() {
         return fechaAlta;
     }
 

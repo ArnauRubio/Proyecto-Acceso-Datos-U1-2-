@@ -11,11 +11,11 @@ public interface JuegoDao {
 
     List<Juego> getJuegos();
 
-    int addSocia(Socia socia);
+    int addJuego(Juego juego);
 
-    boolean update(Socia socia);
+    boolean update(Juego juego);
 
     void delete(int id);
 
-    List<Juego> getJuegosByAsociacionId(int id_asociacion);
+    //List<Juego> getJuegosByAsociacionId(int id_asociacion);
 }
