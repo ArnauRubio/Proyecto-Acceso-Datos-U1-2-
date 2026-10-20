@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class MenuPrincipal {
+    public JPanel panelMenu;
     private JButton buttonSocias;
     private JButton buttonJuegos;
     private JButton buttonPartidas;

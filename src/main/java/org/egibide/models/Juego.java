@@ -1,7 +1,7 @@
 package org.egibide.models;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 public class Juego {
@@ -34,7 +34,6 @@ public class Juego {
         this.localizacion = localizacion;
         this.propietaria = propietaria;
         this.fechaAlta = fechaAlta;
-        this.asociacion = asociacion;
         this.partidas = new ArrayList<>();
     }
 

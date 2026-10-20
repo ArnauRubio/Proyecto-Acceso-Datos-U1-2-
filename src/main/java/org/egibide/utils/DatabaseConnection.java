@@ -12,7 +12,7 @@ public class DatabaseConnection {
         try {
             String driver = "org.mariadb.jdbc.Driver";
             Class.forName(driver);
-            String url = "jdbc:mariadb://localhost:33060/asociacionjuegos";
+            String url = "jdbc:mariadb://localhost:3306/asociacionjuegos";
             String user = "root";
             String password = "12345Abcde";
             this.connection = DriverManager.getConnection(url, user, password);

@@ -8,7 +8,7 @@ import org.egibide.utils.ModTabla_GesJuegos;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -168,7 +168,7 @@ public class Juegos {
             }
             Juego juego = new Juego(id, nombre, "", "", minJugadores, maxJugadores, duracion,
                     txtTematica.getText().trim(), modoJuego, txtLocalizacion.getText().trim(),
-                    propietaria, new Date(), null);
+                    propietaria, Date.valueOf(java.time.LocalDate.now()));
             return juego;
         } catch (NumberFormatException ex) {
             throw new IllegalArgumentException("ID, duración y número de jugadores deben ser números enteros.");
