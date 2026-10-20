@@ -18,5 +18,5 @@ public interface JuegoDao {
 
     boolean delete(int id) throws SQLException;
 
-    //List<Juego> getJuegosByAsociacionId(int id_asociacion);
+    Juego getJuegoByPartidaId(int id_partida);
 }

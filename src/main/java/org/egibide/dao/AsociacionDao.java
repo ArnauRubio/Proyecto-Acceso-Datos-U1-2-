@@ -13,5 +13,7 @@ public interface AsociacionDao {
 
     void delete(int id);
 
-    //Asociacion getAsociacionBySociaId(int id_socia);
+    Asociacion getAsociacionByJuegoId(int id_juego);
+
+    Asociacion getAsociacionBySociaId(int id_socia);
 }

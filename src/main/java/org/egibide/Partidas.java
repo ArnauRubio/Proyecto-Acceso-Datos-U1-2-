@@ -50,7 +50,7 @@ public class Partidas {
                     if (partida.getJuego() != null) {
                         partida.getJuego().getPartidas().add(partida);
                     }
-                    for (Socia socia : partida.getSocias()) {
+                    for (Socia socia : partida.getJugadoras()) {
                         if (!socia.getPartidas().contains(partida)) {
                             socia.getPartidas().add(partida);
                         }
@@ -75,11 +75,11 @@ public class Partidas {
                     seleccionada.setHora(cambios.getHora());
                     seleccionada.setJugadoresDeseados(cambios.getJugadoresDeseados());
                     seleccionada.setJuego(cambios.getJuego());
-                    for (Socia socia : seleccionada.getSocias()) {
+                    for (Socia socia : seleccionada.getJugadoras()) {
                         socia.getPartidas().remove(seleccionada);
                     }
-                    seleccionada.setSocias(cambios.getSocias());
-                    for (Socia socia : seleccionada.getSocias()) {
+                    seleccionada.setJugadoras(cambios.getJugadoras());
+                    for (Socia socia : seleccionada.getJugadoras()) {
                         if (!socia.getPartidas().contains(seleccionada)) {
                             socia.getPartidas().add(seleccionada);
                         }
@@ -111,7 +111,7 @@ public class Partidas {
                     if (seleccionada.getJuego() != null) {
                         seleccionada.getJuego().getPartidas().remove(seleccionada);
                     }
-                    for (Socia socia : seleccionada.getSocias()) {
+                    for (Socia socia : seleccionada.getJugadoras()) {
                         socia.getPartidas().remove(seleccionada);
                     }
                     tableModel.fireTableDataChanged();
@@ -180,7 +180,7 @@ public class Partidas {
             juegos.setSelectedItem(partidaOriginal.getJuego());
         }
         if (partidaOriginal != null) {
-            for (Socia socia : partidaOriginal.getSocias()) {
+            for (Socia socia : partidaOriginal.getJugadoras()) {
                 participantes.setSelectedValue(socia, true);
             }
         }
@@ -221,7 +221,7 @@ public class Partidas {
                 }
                 int id = partidaOriginal == null ? siguienteId() : partidaOriginal.getId();
                 Partida resultado = new Partida(id, fechaPartida, horaPartida, jugadoresDeseados, juegoElegido);
-                resultado.setSocias(new ArrayList<>(participantes.getSelectedValuesList()));
+                resultado.setJugadoras(new ArrayList<>(participantes.getSelectedValuesList()));
                 if (partidaOriginal != null) {
                     resultado.setGanadoras(new ArrayList<>(partidaOriginal.getGanadoras()));
                 }
@@ -263,7 +263,7 @@ public class Partidas {
                 @Override
                 public boolean include(Entry<? extends ModTabla_GesPartidas, ? extends Integer> entry) {
                     Partida partida = allPartidas.get(entry.getIdentifier());
-                    return partida.getSocias().size() < partida.getJugadoresDeseados();
+                    return partida.getJugadoras().size() < partida.getJugadoresDeseados();
                 }
             });
         } else {

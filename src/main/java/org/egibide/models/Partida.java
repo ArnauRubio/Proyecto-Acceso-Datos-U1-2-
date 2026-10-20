@@ -9,19 +9,19 @@ public class Partida {
     private Date fecha;
     private int hora;
     private int jugadoresDeseados;
+
     private List<Socia> ganadoras;
-
     private Juego juego;
-    private List<Socia> socias;
+    private List<Socia> jugadoras;
 
-    public Partida(int id, Date fecha, int hora, int jugadoresDeseados, Juego juego) {
+    public Partida(int id, Date fecha, int hora, int jugadoresDeseados) {
         this.id = id;
         this.fecha = fecha;
         this.hora = hora;
         this.jugadoresDeseados = jugadoresDeseados;
         this.ganadoras = new ArrayList<>();
         this.juego = juego;
-        this.socias = new ArrayList<>();
+        this.jugadoras = new ArrayList<>();
     }
 
     public int getId() {
@@ -32,8 +32,8 @@ public class Partida {
         this.id = id;
     }
 
-    public Date getFecha() {
-        return fecha;
+    public java.sql.Date getFecha() {
+        return (java.sql.Date) fecha;
     }
 
     public void setFecha(Date fecha) {
@@ -72,12 +72,12 @@ public class Partida {
         this.juego = juego;
     }
 
-    public List<Socia> getSocias() {
-        return socias;
+    public List<Socia> getJugadoras() {
+        return jugadoras;
     }
 
-    public void setSocias(List<Socia> socias) {
-        this.socias = socias;
+    public void setJugadoras(List<Socia> jugadoras) {
+        this.jugadoras = jugadoras;
     }
 
     @Override

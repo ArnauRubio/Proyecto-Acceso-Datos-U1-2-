@@ -9,7 +9,7 @@ import java.util.List;
 public interface SociaDao {
     Socia getSocia(int id);
 
-    List<Socia> getSocias(int id);
+    List<Socia> getSocias();
 
     int addSocia(Socia socia) throws SQLException;
 

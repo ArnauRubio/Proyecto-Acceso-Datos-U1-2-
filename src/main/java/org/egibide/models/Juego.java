@@ -1,7 +1,7 @@
 package org.egibide.models;
 
 import java.util.ArrayList;
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 public class Juego {
@@ -13,7 +13,7 @@ public class Juego {
     private int maxJugadores;
     private int duracion;
     private String tematica;
-    private coop_comp modoJuego;
+    private ModoJuego modoJuego;
     private String localizacion;
     private Socia dueno;
     private Date fechaAlta;
@@ -21,7 +21,7 @@ public class Juego {
     private Asociacion asociacion;
     private List<Partida> partidas;
 
-    public Juego(int id, String nombre, String autor, String descripcion, int minJugadores, int maxJugadores, int duracion, String tematica, coop_comp modoJuego, String localizacion, Socia dueno, Date fechaAlta) {
+    public Juego(int id, String nombre, String autor, String descripcion, int minJugadores, int maxJugadores, int duracion, String tematica, ModoJuego modoJuego, String localizacion, Socia propietaria, Date fechaAlta) {
         this.id = id;
         this.nombre = nombre;
         this.autor = autor;
@@ -101,11 +101,11 @@ public class Juego {
         this.tematica = tematica;
     }
 
-    public coop_comp getModoJuego() {
+    public ModoJuego getModoJuego() {
         return modoJuego;
     }
 
-    public void setModoJuego(coop_comp modoJuego) {
+    public void setModoJuego(ModoJuego modoJuego) {
         this.modoJuego = modoJuego;
     }
 
@@ -126,7 +126,7 @@ public class Juego {
     }
 
     public java.sql.Date getFechaAlta() {
-        return fechaAlta;
+        return (java.sql.Date) fechaAlta;
     }
 
     public void setFechaAlta(Date fechaAlta) {

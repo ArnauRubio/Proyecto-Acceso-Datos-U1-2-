@@ -53,7 +53,7 @@ public class SociaDaoImpl implements SociaDao {
     }
 
     @Override
-    public List<Socia> getSocias(int id) {
+    public List<Socia> getSocias() {
         List<Socia> socias = new ArrayList<>();
 
         String query = "select * from socia";

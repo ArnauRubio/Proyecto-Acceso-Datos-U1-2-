@@ -48,11 +48,11 @@ public class ModTabla_GesPartidas extends AbstractTableModel {
             case 4:
                 return partida.getJugadoresDeseados();
             case 5:
-                if (partida.getSocias().isEmpty()) {
+                if (partida.getJugadoras().isEmpty()) {
                     return "Sin jugadoras";
                 }
                 StringBuilder jugadoras = new StringBuilder();
-                for (Socia socia : partida.getSocias()) {
+                for (Socia socia : partida.getJugadoras()) {
                     if (jugadoras.length() > 0) {
                         jugadoras.append(", ");
                     }
