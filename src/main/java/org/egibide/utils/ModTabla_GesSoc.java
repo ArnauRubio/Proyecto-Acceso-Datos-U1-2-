@@ -1,4 +1,4 @@
-package org.egibide;
+package org.egibide.utils;
 
 import org.egibide.models.Socia;
 

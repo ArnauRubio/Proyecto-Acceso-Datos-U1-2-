@@ -12,9 +12,10 @@ public class DatabaseConnection {
         try {
             String driver = "org.mariadb.jdbc.Driver";
             Class.forName(driver);
+
             String url = "jdbc:mariadb://localhost:3306/asociacionjuegos";
             String user = "root";
-            String password = "12345Abcde";
+            String password = "";
             this.connection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
             throw new SQLException("No se encontró el controlador JDBC de MariaDB.", e);

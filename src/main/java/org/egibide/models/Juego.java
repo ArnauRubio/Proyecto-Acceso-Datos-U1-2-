@@ -13,15 +13,15 @@ public class Juego {
     private int maxJugadores;
     private int duracion;
     private String tematica;
-    private ModoJuego modoJuego;
+    private coop_comp modoJuego;
     private String localizacion;
-    private Socia propietaria;
+    private Socia dueno;
     private Date fechaAlta;
 
     private Asociacion asociacion;
     private List<Partida> partidas;
 
-    public Juego(int id, String nombre, String autor, String descripcion, int minJugadores, int maxJugadores, int duracion, String tematica, ModoJuego modoJuego, String localizacion, Socia propietaria, Date fechaAlta) {
+    public Juego(int id, String nombre, String autor, String descripcion, int minJugadores, int maxJugadores, int duracion, String tematica, coop_comp modoJuego, String localizacion, Socia dueno, Date fechaAlta) {
         this.id = id;
         this.nombre = nombre;
         this.autor = autor;
@@ -32,7 +32,7 @@ public class Juego {
         this.tematica = tematica;
         this.modoJuego = modoJuego;
         this.localizacion = localizacion;
-        this.propietaria = propietaria;
+        this.dueno = dueno;
         this.fechaAlta = fechaAlta;
         this.partidas = new ArrayList<>();
     }
@@ -101,11 +101,11 @@ public class Juego {
         this.tematica = tematica;
     }
 
-    public ModoJuego getModoJuego() {
+    public coop_comp getModoJuego() {
         return modoJuego;
     }
 
-    public void setModoJuego(ModoJuego modoJuego) {
+    public void setModoJuego(coop_comp modoJuego) {
         this.modoJuego = modoJuego;
     }
 
@@ -117,12 +117,12 @@ public class Juego {
         this.localizacion = localizacion;
     }
 
-    public Socia getPropietaria() {
-        return propietaria;
+    public Socia getDueno() {
+        return dueno;
     }
 
-    public void setPropietaria(Socia propietaria) {
-        this.propietaria = propietaria;
+    public void setDueno(Socia dueno) {
+        this.dueno = dueno;
     }
 
     public java.sql.Date getFechaAlta() {
@@ -162,7 +162,7 @@ public class Juego {
                 ", tematica='" + tematica + '\'' +
                 ", modoJuego=" + modoJuego +
                 ", localizacion='" + localizacion + '\'' +
-                ", propietaria=" + propietaria +
+                ", propietaria=" + dueno +
                 ", fechaAlta=" + fechaAlta +
                 '}';
     }

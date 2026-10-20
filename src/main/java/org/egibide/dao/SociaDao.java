@@ -3,6 +3,7 @@ package org.egibide.dao;
 import org.egibide.models.Asociacion;
 import org.egibide.models.Socia;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface SociaDao {
@@ -10,11 +11,11 @@ public interface SociaDao {
 
     List<Socia> getSocias(int id);
 
-    int addSocia(Socia socia);
+    int addSocia(Socia socia) throws SQLException;
 
-    boolean update(Socia socia);
+    boolean update(Socia socia, int idOriginal) throws SQLException;
 
-    void delete(int id);
+    boolean delete(int id) throws SQLException;
 
 //    List<Socia> getSociasByAsociacionId(int id_asociacion);
 }

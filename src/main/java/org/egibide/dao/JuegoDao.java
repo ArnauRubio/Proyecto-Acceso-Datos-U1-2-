@@ -4,6 +4,7 @@ import org.egibide.models.Asociacion;
 import org.egibide.models.Juego;
 import org.egibide.models.Socia;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface JuegoDao {
@@ -11,11 +12,11 @@ public interface JuegoDao {
 
     List<Juego> getJuegos();
 
-    int addJuego(Juego juego);
+    int addJuego(Juego juego) throws SQLException;
 
-    boolean update(Juego juego);
+    boolean update(Juego juego, int idOriginal) throws SQLException;
 
-    void delete(int id);
+    boolean delete(int id) throws SQLException;
 
     //List<Juego> getJuegosByAsociacionId(int id_asociacion);
 }

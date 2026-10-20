@@ -3,9 +3,11 @@
   <grid id="27dc6" binding="panelMenu" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="407" height="400"/>
     </constraints>
-    <properties/>
+    <properties>
+      <font name="Linux Libertine Display G" size="12" style="0"/>
+    </properties>
     <border type="none"/>
     <children>
       <component id="af60e" class="javax.swing.JButton" binding="buttonSocias">
@@ -32,14 +34,32 @@
           <text value="Partiddas"/>
         </properties>
       </component>
-      <component id="1f0ec" class="javax.swing.JTextArea" binding="TAInfo">
+      <grid id="bd2cc" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="50"/>
-          </grid>
+          <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
-      </component>
+        <border type="none"/>
+        <children>
+          <scrollpane id="514ea">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="1f0ec" class="javax.swing.JTextArea" binding="TAInfo">
+                <constraints/>
+                <properties>
+                  <editable value="false"/>
+                  <text value="Asociacion de juegos de Vitoria-Gasteiz,&#10; desde 2005 dando los mejores servicios&#10; de roleplay y diversion fantastica,&#10; para toda la familia.&#10;mas informacion en AJVitoria@gmail.com&#10;o al telefono: 944569724"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
+        </children>
+      </grid>
     </children>
   </grid>
 </form>

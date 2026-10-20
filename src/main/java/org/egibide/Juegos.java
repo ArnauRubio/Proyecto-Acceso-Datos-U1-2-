@@ -1,14 +1,16 @@
 package org.egibide;
 
 import org.egibide.models.Juego;
-import org.egibide.models.ModoJuego;
+import org.egibide.models.coop_comp;
 import org.egibide.models.Socia;
+import org.egibide.idao.JuegoDaoImpl;
 import org.egibide.utils.ModTabla_GesJuegos;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,6 +41,7 @@ public class Juegos {
 
     private final List<Juego> allJuegos;
     private final List<Socia> allSocias;
+    private final JuegoDaoImpl juegoDao = new JuegoDaoImpl();
     private Juego juegoSeleccionado;
 
     public Juegos(List<Juego> allJuegos, List<Socia> allSocias) {
@@ -74,11 +77,17 @@ public class Juegos {
                         showError("Ya existe un juego con ese ID.");
                         return;
                     }
+                    if (juegoDao.addJuego(nuevo) == 0) {
+                        showError("No se pudo guardar el juego.");
+                        return;
+                    }
                     allJuegos.add(nuevo);
                     refreshTable();
                     clearForm();
                 } catch (IllegalArgumentException ex) {
                     showError(ex.getMessage());
+                } catch (SQLException ex) {
+                    showError("No se pudo guardar el juego: " + ex.getMessage());
                 }
             }
         });
@@ -97,19 +106,30 @@ public class Juegos {
                         showError("Ya existe un juego con ese ID.");
                         return;
                     }
+                    actualizado.setAutor(juegoSeleccionado.getAutor());
+                    actualizado.setDescripcion(juegoSeleccionado.getDescripcion());
+                    actualizado.setFechaAlta(juegoSeleccionado.getFechaAlta());
+                    if (!juegoDao.update(actualizado, juegoSeleccionado.getId())) {
+                        showError("No se encontró el juego en la base de datos.");
+                        return;
+                    }
                     juegoSeleccionado.setId(actualizado.getId());
                     juegoSeleccionado.setNombre(actualizado.getNombre());
+                    juegoSeleccionado.setAutor(actualizado.getAutor());
+                    juegoSeleccionado.setDescripcion(actualizado.getDescripcion());
                     juegoSeleccionado.setModoJuego(actualizado.getModoJuego());
                     juegoSeleccionado.setMinJugadores(actualizado.getMinJugadores());
                     juegoSeleccionado.setMaxJugadores(actualizado.getMaxJugadores());
                     juegoSeleccionado.setDuracion(actualizado.getDuracion());
-                    juegoSeleccionado.setPropietaria(actualizado.getPropietaria());
+                    juegoSeleccionado.setDueno(actualizado.getDueno());
                     juegoSeleccionado.setLocalizacion(actualizado.getLocalizacion());
                     juegoSeleccionado.setTematica(actualizado.getTematica());
                     refreshTable();
                     clearForm();
                 } catch (IllegalArgumentException ex) {
                     showError(ex.getMessage());
+                } catch (SQLException ex) {
+                    showError("No se pudo actualizar el juego: " + ex.getMessage());
                 }
             }
         });
@@ -129,6 +149,15 @@ public class Juegos {
                         "¿Borrar el juego " + juegoSeleccionado.getNombre() + "?",
                         "Confirmar borrado", JOptionPane.YES_NO_OPTION);
                 if (confirmacion == JOptionPane.YES_OPTION) {
+                    try {
+                        if (!juegoDao.delete(juegoSeleccionado.getId())) {
+                            showError("No se encontró el juego en la base de datos.");
+                            return;
+                        }
+                    } catch (SQLException ex) {
+                        showError("No se pudo borrar el juego: " + ex.getMessage());
+                        return;
+                    }
                     allJuegos.remove(juegoSeleccionado);
                     refreshTable();
                     clearForm();
@@ -156,9 +185,9 @@ public class Juegos {
             if (duracion <= 0 || minJugadores <= 0 || maxJugadores < minJugadores) {
                 throw new IllegalArgumentException("Duración y jugadores deben ser válidos; el máximo no puede ser menor que el mínimo.");
             }
-            ModoJuego modoJuego;
+            coop_comp modoJuego;
             try {
-                modoJuego = ModoJuego.valueOf(modo.toUpperCase(Locale.ROOT));
+                modoJuego = coop_comp.valueOf(modo.toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException ex) {
                 throw new IllegalArgumentException("El modo debe ser COOPERATIVO o COMPETITIVO.");
             }
@@ -245,7 +274,7 @@ public class Juegos {
         txtMinJugadores.setText(String.valueOf(juego.getMinJugadores()));
         txtMaxJugadores.setText(String.valueOf(juego.getMaxJugadores()));
         txtJugadoresDeseados.setText(juego.getMinJugadores() + " - " + juego.getMaxJugadores());
-        txtDueno.setText(juego.getPropietaria() == null ? "" : String.valueOf(juego.getPropietaria().getId()));
+        txtDueno.setText(juego.getDueno() == null ? "" : String.valueOf(juego.getDueno().getId()));
         txtLocalizacion.setText(juego.getLocalizacion() == null ? "" : juego.getLocalizacion());
         txtTematica.setText(juego.getTematica() == null ? "" : juego.getTematica());
         textPane1.setText(String.valueOf(juego.getPartidas().size()));

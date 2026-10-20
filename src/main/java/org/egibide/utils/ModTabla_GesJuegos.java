@@ -54,7 +54,7 @@ public class ModTabla_GesJuegos extends AbstractTableModel {
             case 7:
                 return juego.getTematica();
             case 8:
-                Socia propietaria = juego.getPropietaria();
+                Socia propietaria = juego.getDueno();
                 return propietaria == null ? "" : propietaria.getNombre() + " " + propietaria.getApellidos();
             case 9:
                 return juego.getAutor();
