@@ -51,8 +51,8 @@ public class Partidas {
                         partida.getJuego().getPartidas().add(partida);
                     }
                     for (Socia socia : partida.getJugadoras()) {
-                        if (!socia.getPartidas().contains(partida)) {
-                            socia.getPartidas().add(partida);
+                        if (!socia.getParticipaciones().contains(partida)) {
+                            socia.getParticipaciones().add(partida);
                         }
                     }
                     tableModel.fireTableDataChanged();
@@ -76,12 +76,12 @@ public class Partidas {
                     seleccionada.setJugadoresDeseados(cambios.getJugadoresDeseados());
                     seleccionada.setJuego(cambios.getJuego());
                     for (Socia socia : seleccionada.getJugadoras()) {
-                        socia.getPartidas().remove(seleccionada);
+                        socia.getParticipaciones().remove(seleccionada);
                     }
                     seleccionada.setJugadoras(cambios.getJugadoras());
                     for (Socia socia : seleccionada.getJugadoras()) {
-                        if (!socia.getPartidas().contains(seleccionada)) {
-                            socia.getPartidas().add(seleccionada);
+                        if (!socia.getParticipaciones().contains(seleccionada)) {
+                            socia.getParticipaciones().add(seleccionada);
                         }
                     }
                     if (juegoAnterior != null && juegoAnterior != cambios.getJuego()) {
@@ -112,7 +112,7 @@ public class Partidas {
                         seleccionada.getJuego().getPartidas().remove(seleccionada);
                     }
                     for (Socia socia : seleccionada.getJugadoras()) {
-                        socia.getPartidas().remove(seleccionada);
+                        socia.getParticipaciones().remove(seleccionada);
                     }
                     tableModel.fireTableDataChanged();
                 }

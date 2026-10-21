@@ -19,5 +19,5 @@ public interface PartidaDao {
 
     List<Partida> getPartidasByJuegoId(int id_juego);
 
-    List<Partida> getPartidasBySociaId(int id_socia);
+    Partida getPartidaByParticipanteId(int id_participante);
 }

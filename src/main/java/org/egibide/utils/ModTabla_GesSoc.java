@@ -46,7 +46,7 @@ public class ModTabla_GesSoc extends AbstractTableModel {
             case 4:
                 return socias.get(rowIndex).getEmail();
             case 5:
-                return socias.get(rowIndex).getPartidas();
+                return socias.get(rowIndex).getParticipaciones();
             default:
         }
         return null;

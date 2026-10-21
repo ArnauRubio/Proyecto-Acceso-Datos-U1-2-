@@ -16,7 +16,7 @@ import java.util.Date;
 public class JuegoDaoImpl implements JuegoDao {
 
     public boolean juegoExists(int id) {
-        String query = "select * from juego where id=?";
+        String query = "select * from juego where id_juego=?";
         PreparedStatement ps;
         boolean juegoExists = false;
         try {
@@ -34,7 +34,7 @@ public class JuegoDaoImpl implements JuegoDao {
 
     @Override
     public Juego getJuego(int id) {
-        String query = "select * from juego where id=?";
+        String query = "select * from juego where id_juego=?";
         PreparedStatement ps = null;
         Juego juego = null;
         try {
@@ -48,18 +48,18 @@ public class JuegoDaoImpl implements JuegoDao {
                         : new SociaDaoImpl().getSocia(idDueno);
 
                 juego = new Juego(
-                        rs.getInt("id"),
+                        rs.getInt("id_juego"),
                         rs.getString("nombre"),
                         rs.getString("autor"),
                         rs.getString("descripcion"),
-                        rs.getInt("minJugadores"),
-                        rs.getInt("maxJugadores"),
+                        rs.getInt("min_jugadores"),
+                        rs.getInt("max_jugadores"),
                         rs.getInt("duracion"),
                         rs.getString("tematica"),
-                        ModoJuego.valueOf(rs.getString("modoJuego")),
+                        ModoJuego.valueOf(rs.getString("modo_juego")),
                         rs.getString("localizacion"),
                         dueno,
-                        rs.getDate("fechaAlta")
+                        rs.getDate("fecha_alta")
                 );
             }
         } catch (SQLException e) {
@@ -90,14 +90,14 @@ public class JuegoDaoImpl implements JuegoDao {
                         rs.getString("nombre"),
                         rs.getString("autor"),
                         rs.getString("descripcion"),
-                        rs.getInt("min_Jugadores"),
-                        rs.getInt("max_Jugadores"),
+                        rs.getInt("min_jugadores"),
+                        rs.getInt("max_jugadores"),
                         rs.getInt("duracion"),
                         rs.getString("tematica"),
-                        ModoJuego.valueOf(rs.getString("modoJuego")),
+                        ModoJuego.valueOf(rs.getString("modo_juego")),
                         rs.getString("localizacion"),
                         dueno,
-                        rs.getDate("fechaAlta")
+                        rs.getDate("fecha_alta")
                 );
                 juegos.add(juego);
             }
@@ -109,7 +109,7 @@ public class JuegoDaoImpl implements JuegoDao {
 
     @Override
     public int addJuego(Juego juego) {
-        String query = "insert into juego values id=?, nombre=?, autor=?, descripcion=?, minJugadores=?, maxJugadores=?, duracion=?, tematica=?, modoJuego=?, localizacion=?, propietaria=?, fechaAlta=?";
+        String query = "insert into juego values id_juego=?, nombre=?, autor=?, descripcion=?, min_jugadores=?, max_jugadores=?, duracion=?, tematica=?, modo_juego=?, localizacion=?, propietaria=?, fecha_alta=?";
         PreparedStatement ps;
         int rs = 0;
         try {
@@ -143,7 +143,7 @@ public class JuegoDaoImpl implements JuegoDao {
     @Override
     public boolean update(Juego juego) {
         if (juegoExists(juego.getId())) {
-            String query = "update juego set nombre=?, autor=?, descripcion=?, minJugadores=?, maxJugadores=?, duracion=?, tematica=?, modoJuego=?, localizacion=?, propietaria=?, fechaAlta=? where id=?";
+            String query = "update juego set nombre=?, autor=?, descripcion=?, min_jugadores=?, max_jugadores=?, duracion=?, tematica=?, modo_juego=?, localizacion=?, propietaria=?, fecha_alta=? where id_juego=?";
             PreparedStatement ps;
             int rs = 0;
             try {
@@ -178,7 +178,7 @@ public class JuegoDaoImpl implements JuegoDao {
 
     @Override
     public void delete(int id) {
-        String query = "delete from juego where id=?";
+        String query = "delete from juego where id_juego=?";
         PreparedStatement ps = null;
 
         try {
@@ -202,24 +202,24 @@ public class JuegoDaoImpl implements JuegoDao {
             ps.setInt(1, id_partida);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                int idPropietaria = rs.getInt("propietaria");
-                Socia propietaria = rs.wasNull()
+                int idDueno = rs.getInt("dueno");
+                Socia dueno = rs.wasNull()
                         ? null
-                        : new SociaDaoImpl().getSocia(idPropietaria);
+                        : new SociaDaoImpl().getSocia(idDueno);
 
                 juego = new Juego(
-                        rs.getInt("id"),
+                        rs.getInt("id_juego"),
                         rs.getString("nombre"),
                         rs.getString("autor"),
                         rs.getString("descripcion"),
-                        rs.getInt("minJugadores"),
-                        rs.getInt("maxJugadores"),
+                        rs.getInt("min_jugadores"),
+                        rs.getInt("max_jugadores"),
                         rs.getInt("duracion"),
                         rs.getString("tematica"),
-                        ModoJuego.valueOf(rs.getString("modoJuego")),
+                        ModoJuego.valueOf(rs.getString("modo_juego")),
                         rs.getString("localizacion"),
-                        propietaria,
-                        rs.getDate("fechaAlta")
+                        dueno,
+                        rs.getDate("fecha_alta")
                 );
             }
         } catch (SQLException e) {

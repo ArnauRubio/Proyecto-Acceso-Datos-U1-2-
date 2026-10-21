@@ -19,4 +19,6 @@ public interface ParticipanteDao {
     List<Participante> getParticipantesByPartidaId(int id_partida);
 
     List<Participante> getGanadorasByPartidaId(int id_partida);
+
+    List<Participante> getParticipacionesBySociaId(int id_socia);
 }

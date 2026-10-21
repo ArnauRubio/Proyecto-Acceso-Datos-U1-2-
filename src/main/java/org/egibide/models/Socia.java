@@ -11,7 +11,7 @@ public class Socia {
     private String email;
 
     private Asociacion asociacion;
-    private List<Partida> partidas;
+    private List<Participante> participaciones;
 
     public Socia(int id, String nombre, String apellidos, int edad, String email) {
         this.id = id;
@@ -19,7 +19,7 @@ public class Socia {
         this.apellidos = apellidos;
         this.edad = edad;
         this.email = email;
-        this.partidas = new ArrayList<>();
+        this.participaciones = new ArrayList<>();
     }
 
     public int getId() {
@@ -70,12 +70,12 @@ public class Socia {
         this.asociacion = asociacion;
     }
 
-    public List<Partida> getPartidas() {
-        return partidas;
+    public List<Participante> getParticipaciones() {
+        return participaciones;
     }
 
-    public void setPartidas(List<Partida> partidas) {
-        this.partidas = partidas;
+    public void setParticipaciones(List<Participante> participaciones) {
+        this.participaciones = participaciones;
     }
 
     @Override

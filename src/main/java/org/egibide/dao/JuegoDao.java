@@ -8,15 +8,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface JuegoDao {
+
     Juego getJuego(int id);
 
     List<Juego> getJuegos();
 
-    int addJuego(Juego juego) throws SQLException;
+    int addJuego(Juego juego);
 
-    boolean update(Juego juego, int idOriginal) throws SQLException;
+    boolean update(Juego juego);
 
-    boolean delete(int id) throws SQLException;
+    void delete(int id);
 
     Juego getJuegoByPartidaId(int id_partida);
+
 }

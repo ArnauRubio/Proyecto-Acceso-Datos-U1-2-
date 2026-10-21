@@ -12,7 +12,6 @@ public class PartidaRepositoryImpl implements PartidaRepository {
 
     private JuegoDao juegoDao = new JuegoDaoImpl();
     private PartidaDao partidaDao = new PartidaDaoImpl();
-    private SociaDao sociaDao = new SociaDaoImpl();
     private ParticipanteDao participanteDao = new ParticipanteDaoImpl();
 
     @Override
@@ -23,7 +22,10 @@ public class PartidaRepositoryImpl implements PartidaRepository {
         partida.setJuego(juego);
 
         List<Participante> participantes = participanteDao.getParticipantesByPartidaId(partida.getId());
-        partida.set
+        partida.setJugadoras(participantes);
+
+        List<Participante> ganadoras = participanteDao.getGanadorasByPartidaId(partida.getId());
+        partida.setGanadoras(ganadoras);
 
         return partida;
     }

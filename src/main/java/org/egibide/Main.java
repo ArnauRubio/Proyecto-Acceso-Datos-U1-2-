@@ -17,7 +17,7 @@ public class Main {
     public static void main(String[] args) throws SQLException {
         DatabaseConnection.getInstance();
 
-        List<Socia> socias = new SociaDaoImpl().getSocias(0);
+        List<Socia> socias = new SociaDaoImpl().getSocias();
         List<Partida> partidas = new PartidaDaoImpl().getPartidas();
         List<Juego> juegos = new JuegoDaoImpl().getJuegos();
 

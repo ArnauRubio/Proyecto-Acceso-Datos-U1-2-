@@ -1,6 +1,6 @@
 package org.egibide.models;
 
-public enum coop_comp {
+public enum ModoJuego {
     COOPERATIVO,
     COMPETITIVO
 }

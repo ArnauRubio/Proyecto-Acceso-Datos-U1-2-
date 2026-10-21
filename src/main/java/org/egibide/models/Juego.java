@@ -21,7 +21,7 @@ public class Juego {
     private Asociacion asociacion;
     private List<Partida> partidas;
 
-    public Juego(int id, String nombre, String autor, String descripcion, int minJugadores, int maxJugadores, int duracion, String tematica, ModoJuego modoJuego, String localizacion, Socia propietaria, Date fechaAlta) {
+    public Juego(int id, String nombre, String autor, String descripcion, int minJugadores, int maxJugadores, int duracion, String tematica, ModoJuego modoJuego, String localizacion, Socia dueno, Date fechaAlta) {
         this.id = id;
         this.nombre = nombre;
         this.autor = autor;

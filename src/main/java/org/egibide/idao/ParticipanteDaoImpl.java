@@ -176,4 +176,28 @@ public class ParticipanteDaoImpl implements ParticipanteDao {
         }
         return ganadoras;
     }
+
+    @Override
+    public List<Participante> getParticipacionesBySociaId(int id_socia) {
+        List<Participante> participantes = new ArrayList<>();
+
+        String query = "select * from participante where id_socia=?";
+        PreparedStatement ps = null;
+        Participante participante = null;
+        try {
+            ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query);
+            ps.setInt(1, id_socia);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                participante = new Participante(
+                        rs.getInt("id"),
+                        rs.getBoolean("ganadora")
+                );
+                participantes.add(participante);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return participantes;
+    }
 }

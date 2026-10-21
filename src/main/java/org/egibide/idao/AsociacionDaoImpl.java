@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class AsociacionDaoImpl implements AsociacionDao {
 
     public boolean asociacionExists(int id) {
-        String query = "select * from asociacion where id=?";
+        String query = "select * from asociacion where id_asociacion=?";
         PreparedStatement ps;
         boolean asociacionExists = false;
         try {
@@ -30,7 +30,7 @@ public class AsociacionDaoImpl implements AsociacionDao {
 
     @Override
     public Asociacion getAsociacion(int id) {
-        String query = "select * from asociacion where id=?";
+        String query = "select * from asociacion where id_asociacion=?";
         PreparedStatement ps = null;
         Asociacion asociacion = null;
         try {
@@ -43,7 +43,7 @@ public class AsociacionDaoImpl implements AsociacionDao {
                         rs.getString("nombre"),
                         rs.getDate("fecha_apertura"),
                         rs.getString("direccion"),
-                        rs.getString("CIF")
+                        rs.getString("cif")
                 );
             }
         } catch (SQLException e) {
@@ -55,7 +55,7 @@ public class AsociacionDaoImpl implements AsociacionDao {
     @Override
     public boolean update(Asociacion asociacion) {
         if (asociacionExists(asociacion.getId())) {
-            String query = "update asociacion set nombre=?, fecha_apertura=?, direccion=?, cif=? where id=?";
+            String query = "update asociacion set nombre=?, fecha_apertura=?, direccion=?, cif=? where id_asociacion=?";
             PreparedStatement ps;
             int rs = 0;
             try {
@@ -77,7 +77,7 @@ public class AsociacionDaoImpl implements AsociacionDao {
 
     @Override
     public void delete(int id) {
-        String query = "delete from asociacion where id=?";
+        String query = "delete from asociacion where id_asociacion=?";
         PreparedStatement ps = null;
 
         try {
@@ -93,7 +93,7 @@ public class AsociacionDaoImpl implements AsociacionDao {
 
     @Override
     public Asociacion getAsociacionByJuegoId(int id_juego) {
-        String query = "select * from asociacion where id=(select id_asociacion from juego where id_juego=?)";
+        String query = "select * from asociacion where id_asociacion=(select id_asociacion from juego where id_juego=?)";
         PreparedStatement ps = null;
         Asociacion asociacion = null;
         try {
@@ -106,7 +106,7 @@ public class AsociacionDaoImpl implements AsociacionDao {
                         rs.getString("nombre"),
                         rs.getDate("fecha_apertura"),
                         rs.getString("direccion"),
-                        rs.getString("CIF")
+                        rs.getString("cif")
                 );
             }
         } catch (SQLException e) {
@@ -117,7 +117,7 @@ public class AsociacionDaoImpl implements AsociacionDao {
 
     @Override
     public Asociacion getAsociacionBySociaId(int id_socia) {
-        String query = "select * from asociacion where id=(select id_asociacion from socia where id_socia=?)";
+        String query = "select * from asociacion where id_asociacion=(select id_asociacion from socia where id_socia=?)";
         PreparedStatement ps = null;
         Asociacion asociacion = null;
         try {
@@ -130,7 +130,7 @@ public class AsociacionDaoImpl implements AsociacionDao {
                         rs.getString("nombre"),
                         rs.getDate("fecha_apertura"),
                         rs.getString("direccion"),
-                        rs.getString("CIF")
+                        rs.getString("cif")
                 );
             }
         } catch (SQLException e) {

@@ -79,39 +79,85 @@ public class SociaDaoImpl implements SociaDao {
     }
 
     @Override
-    public int addSocia(Socia socia) throws SQLException {
-        String query = "insert into socia (id, nombre, apellidos, edad, email) values (?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query)) {
+    public int addSocia(Socia socia){
+        String query = "insert into socia id_socia=?, nombre=?, apellidos=?, edad=?, email=?";
+
+        PreparedStatement ps;
+        int rs = 0;
+        try {
+            ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query);
 
             ps.setInt(1, socia.getId());
             ps.setString(2, socia.getNombre());
             ps.setString(3, socia.getApellidos());
             ps.setInt(4, socia.getEdad());
             ps.setString(5, socia.getEmail());
-            return ps.executeUpdate();
+            rs = ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return rs;
     }
 
     @Override
-    public boolean update(Socia socia, int idOriginal) throws SQLException {
-        String query = "update socia set id=?, nombre=?, apellidos=?, edad=?, email=? where id=?";
-        try (PreparedStatement ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query)) {
-            ps.setInt(1, socia.getId());
-            ps.setString(2, socia.getNombre());
-            ps.setString(3, socia.getApellidos());
-            ps.setInt(4, socia.getEdad());
-            ps.setString(5, socia.getEmail());
-            ps.setInt(6, idOriginal);
-            return ps.executeUpdate() > 0;
+    public boolean update(Socia socia) {
+        if (sociaExists(socia.getId())) {
+            String query = "update socia set id=?, nombre=?, apellidos=?, edad=?, email=? where id=?";
+            PreparedStatement ps;
+            int rs = 0;
+            try {
+                ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query);
+
+                ps.setInt(1, socia.getId());
+                ps.setString(2, socia.getNombre());
+                ps.setString(3, socia.getApellidos());
+                ps.setInt(4, socia.getEdad());
+                ps.setString(5, socia.getEmail());
+                rs = ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            return (rs > 0);
         }
+        return false;
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
-        String query = "delete from socia where id=?";
-        try (PreparedStatement ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query)) {
+    public void delete(int id) {
+        String query = "delete from socia where id_socia=?";
+        PreparedStatement ps = null;
+
+        try {
+            ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query);
+
             ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    }
+
+    @Override
+    public Socia getSociaByParticipanteId(int id_participante) {
+        String query = "select * from socia where id_socia=(select id_socia from participante where id_participante=?)";
+        PreparedStatement ps = null;
+        Socia socia = null;
+        try {
+            ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query);
+            ps.setInt(1, id_participante);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                socia = new Socia(rs.getInt("id_socia"),
+                        rs.getString("nombre"),
+                        rs.getString("apellidos"),
+                        rs.getInt("edad"),
+                        rs.getString("email")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return socia;
     }
 }

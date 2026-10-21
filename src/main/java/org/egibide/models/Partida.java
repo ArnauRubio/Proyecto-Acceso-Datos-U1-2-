@@ -10,9 +10,9 @@ public class Partida {
     private int hora;
     private int jugadoresDeseados;
 
-    private List<Socia> ganadoras;
+    private List<Participante> ganadoras;
     private Juego juego;
-    private List<Socia> jugadoras;
+    private List<Participante> jugadoras;
 
     public Partida(int id, Date fecha, int hora, int jugadoresDeseados) {
         this.id = id;
@@ -20,7 +20,6 @@ public class Partida {
         this.hora = hora;
         this.jugadoresDeseados = jugadoresDeseados;
         this.ganadoras = new ArrayList<>();
-        this.juego = juego;
         this.jugadoras = new ArrayList<>();
     }
 
@@ -56,11 +55,11 @@ public class Partida {
         this.jugadoresDeseados = jugadoresDeseados;
     }
 
-    public List<Socia> getGanadoras() {
+    public List<Participante> getGanadoras() {
         return ganadoras;
     }
 
-    public void setGanadoras(List<Socia> ganadoras) {
+    public void setGanadoras(List<Participante> ganadoras) {
         this.ganadoras = ganadoras;
     }
 
@@ -72,11 +71,11 @@ public class Partida {
         this.juego = juego;
     }
 
-    public List<Socia> getJugadoras() {
+    public List<Participante> getJugadoras() {
         return jugadoras;
     }
 
-    public void setJugadoras(List<Socia> jugadoras) {
+    public void setJugadoras(List<Participante> jugadoras) {
         this.jugadoras = jugadoras;
     }
 

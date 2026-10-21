@@ -1,7 +1,7 @@
 package org.egibide;
 
 import org.egibide.models.Juego;
-import org.egibide.models.coop_comp;
+import org.egibide.models.ModoJuego;
 import org.egibide.models.Socia;
 import org.egibide.idao.JuegoDaoImpl;
 import org.egibide.utils.ModTabla_GesJuegos;
@@ -185,9 +185,9 @@ public class Juegos {
             if (duracion <= 0 || minJugadores <= 0 || maxJugadores < minJugadores) {
                 throw new IllegalArgumentException("Duración y jugadores deben ser válidos; el máximo no puede ser menor que el mínimo.");
             }
-            coop_comp modoJuego;
+            ModoJuego modoJuego;
             try {
-                modoJuego = coop_comp.valueOf(modo.toUpperCase(Locale.ROOT));
+                modoJuego = ModoJuego.valueOf(modo.toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException ex) {
                 throw new IllegalArgumentException("El modo debe ser COOPERATIVO o COMPETITIVO.");
             }

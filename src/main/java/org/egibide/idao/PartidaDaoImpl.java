@@ -166,15 +166,13 @@ public class PartidaDaoImpl implements PartidaDao {
     }
 
     @Override
-    public List<Partida> getPartidasBySociaId(int id_socia) {
-        List<Partida> partidas = new ArrayList<>();
-
-        String query = "select * from partida where id_socia=?";
+    public Partida getPartidaByParticipanteId(int id_participante) {
+        String query = "select * from partida where id_partida=(select id_partida from participante where id_participante=?)";
         PreparedStatement ps = null;
         Partida partida = null;
         try {
             ps = DatabaseConnection.getInstance().getConnection().prepareStatement(query);
-            ps.setInt(1, id_socia);
+            ps.setInt(1, id_participante);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 partida = new Partida(
@@ -183,11 +181,10 @@ public class PartidaDaoImpl implements PartidaDao {
                         rs.getInt("hora"),
                         rs.getInt("jugadoresDeseados")
                 );
-                partidas.add(partida);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return partidas;
+        return partida;
     }
 }

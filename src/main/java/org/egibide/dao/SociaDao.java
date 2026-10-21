@@ -7,15 +7,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface SociaDao {
+
     Socia getSocia(int id);
 
     List<Socia> getSocias();
 
-    int addSocia(Socia socia) throws SQLException;
+    int addSocia(Socia socia);
 
-    boolean update(Socia socia, int idOriginal) throws SQLException;
+    boolean update(Socia socia);
 
-    boolean delete(int id) throws SQLException;
+    void delete(int id);
 
-//    List<Socia> getSociasByAsociacionId(int id_asociacion);
+    Socia getSociaByParticipanteId(int id_participante);
+
 }
