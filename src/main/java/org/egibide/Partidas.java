@@ -1,6 +1,7 @@
 package org.egibide;
 
 import org.egibide.models.Juego;
+import org.egibide.models.Participante;
 import org.egibide.models.Partida;
 import org.egibide.models.Socia;
 import org.egibide.utils.ModTabla_GesPartidas;
@@ -50,11 +51,7 @@ public class Partidas {
                     if (partida.getJuego() != null) {
                         partida.getJuego().getPartidas().add(partida);
                     }
-                    for (Socia socia : partida.getJugadoras()) {
-                        if (!socia.getParticipaciones().contains(partida)) {
-                            socia.getParticipaciones().add(partida);
-                        }
-                    }
+                    vincularParticipantes(partida);
                     tableModel.fireTableDataChanged();
                 }
             }
@@ -75,15 +72,10 @@ public class Partidas {
                     seleccionada.setHora(cambios.getHora());
                     seleccionada.setJugadoresDeseados(cambios.getJugadoresDeseados());
                     seleccionada.setJuego(cambios.getJuego());
-                    for (Socia socia : seleccionada.getJugadoras()) {
-                        socia.getParticipaciones().remove(seleccionada);
-                    }
+                    desvincularParticipantes(seleccionada);
                     seleccionada.setJugadoras(cambios.getJugadoras());
-                    for (Socia socia : seleccionada.getJugadoras()) {
-                        if (!socia.getParticipaciones().contains(seleccionada)) {
-                            socia.getParticipaciones().add(seleccionada);
-                        }
-                    }
+                    seleccionada.setGanadoras(cambios.getGanadoras());
+                    vincularParticipantes(seleccionada);
                     if (juegoAnterior != null && juegoAnterior != cambios.getJuego()) {
                         juegoAnterior.getPartidas().remove(seleccionada);
                     }
@@ -111,9 +103,7 @@ public class Partidas {
                     if (seleccionada.getJuego() != null) {
                         seleccionada.getJuego().getPartidas().remove(seleccionada);
                     }
-                    for (Socia socia : seleccionada.getJugadoras()) {
-                        socia.getParticipaciones().remove(seleccionada);
-                    }
+                    desvincularParticipantes(seleccionada);
                     tableModel.fireTableDataChanged();
                 }
             }
@@ -180,8 +170,10 @@ public class Partidas {
             juegos.setSelectedItem(partidaOriginal.getJuego());
         }
         if (partidaOriginal != null) {
-            for (Socia socia : partidaOriginal.getJugadoras()) {
-                participantes.setSelectedValue(socia, true);
+            for (Participante participante : partidaOriginal.getJugadoras()) {
+                if (participante.getSocia() != null) {
+                    participantes.setSelectedValue(participante.getSocia(), true);
+                }
             }
         }
 
@@ -220,10 +212,18 @@ public class Partidas {
                     throw new IllegalArgumentException("No puede haber más participantes que jugadores deseados.");
                 }
                 int id = partidaOriginal == null ? siguienteId() : partidaOriginal.getId();
-                Partida resultado = new Partida(id, fechaPartida, horaPartida, jugadoresDeseados, juegoElegido);
-                resultado.setJugadoras(new ArrayList<>(participantes.getSelectedValuesList()));
+                Partida resultado = new Partida(id, new java.sql.Date(fechaPartida.getTime()),
+                        horaPartida, jugadoresDeseados);
+                resultado.setJuego(juegoElegido);
+                resultado.setJugadoras(crearParticipantes(participantes.getSelectedValuesList(), partidaOriginal, resultado));
                 if (partidaOriginal != null) {
-                    resultado.setGanadoras(new ArrayList<>(partidaOriginal.getGanadoras()));
+                    List<Participante> ganadoras = new ArrayList<>();
+                    for (Participante participante : resultado.getJugadoras()) {
+                        if (participante.isGanadora()) {
+                            ganadoras.add(participante);
+                        }
+                    }
+                    resultado.setGanadoras(ganadoras);
                 }
                 return resultado;
             } catch (NumberFormatException ex) {
@@ -254,6 +254,60 @@ public class Partidas {
             idMaximo = Math.max(idMaximo, partida.getId());
         }
         return idMaximo + 1;
+    }
+
+    private List<Participante> crearParticipantes(List<Socia> socias, Partida partidaOriginal, Partida partida) {
+        List<Participante> participantes = new ArrayList<>();
+        int id = siguienteIdParticipante();
+        for (Socia socia : socias) {
+            Participante existente = buscarParticipante(partidaOriginal, socia);
+            Participante participante = existente == null ? new Participante(id++, false) : existente;
+            participante.setSocia(socia);
+            participante.setPartida(partida);
+            participantes.add(participante);
+        }
+        return participantes;
+    }
+
+    private Participante buscarParticipante(Partida partida, Socia socia) {
+        if (partida == null) {
+            return null;
+        }
+        for (Participante participante : partida.getJugadoras()) {
+            if (participante.getSocia() != null && participante.getSocia().getId() == socia.getId()) {
+                return participante;
+            }
+        }
+        return null;
+    }
+
+    private int siguienteIdParticipante() {
+        int idMaximo = 0;
+        for (Partida partida : allPartidas) {
+            for (Participante participante : partida.getJugadoras()) {
+                idMaximo = Math.max(idMaximo, participante.getId());
+            }
+        }
+        return idMaximo + 1;
+    }
+
+    private void vincularParticipantes(Partida partida) {
+        for (Participante participante : partida.getJugadoras()) {
+            participante.setPartida(partida);
+            Socia socia = participante.getSocia();
+            if (socia != null && !socia.getParticipaciones().contains(participante)) {
+                socia.getParticipaciones().add(participante);
+            }
+        }
+    }
+
+    private void desvincularParticipantes(Partida partida) {
+        for (Participante participante : partida.getJugadoras()) {
+            Socia socia = participante.getSocia();
+            if (socia != null) {
+                socia.getParticipaciones().remove(participante);
+            }
+        }
     }
 
     private void aplicarFiltro() {

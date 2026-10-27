@@ -7,7 +7,6 @@ import org.egibide.utils.ModTabla_GesSoc;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.List;
 
 public class VGestionSocias {
@@ -63,13 +62,8 @@ public class VGestionSocias {
                 }
 
                 Socia nuevoSoc = new Socia(id, nombre, apellido, 0, "");
-                try {
-                    if (sociaDao.addSocia(nuevoSoc) == 0) {
-                        showError("No se pudo guardar la socia.");
-                        return;
-                    }
-                } catch (SQLException ex) {
-                    showError("No se pudo guardar la socia: " + ex.getMessage());
+                if (sociaDao.addSocia(nuevoSoc) == 0) {
+                    showError("No se pudo guardar la socia.");
                     return;
                 }
 
@@ -115,13 +109,12 @@ public class VGestionSocias {
                         return;
                     }
                     Socia actualizada = new Socia(idNuevo, nombre, apellidos, soc.getEdad(), soc.getEmail());
-                    try {
-                        if (!sociaDao.update(actualizada, idOriginal)) {
-                            showError("No se encontró la socia en la base de datos.");
-                            return;
-                        }
-                    } catch (SQLException ex) {
-                        showError("No se pudo actualizar la socia: " + ex.getMessage());
+                    if (idNuevo != idOriginal) {
+                        showError("No se puede cambiar el ID de una socia existente.");
+                        return;
+                    }
+                    if (!sociaDao.update(actualizada)) {
+                        showError("No se encontró la socia en la base de datos.");
                         return;
                     }
 
@@ -147,15 +140,7 @@ public class VGestionSocias {
                 if (soc == null) {
                     JOptionPane.showMessageDialog(null, "Busca o muestra (>) un jugador", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    try {
-                        if (!sociaDao.delete(soc.getId())) {
-                            showError("No se encontró la socia en la base de datos.");
-                            return;
-                        }
-                    } catch (SQLException ex) {
-                        showError("No se pudo borrar la socia: " + ex.getMessage());
-                        return;
-                    }
+                    sociaDao.delete(soc.getId());
 
                     if (soc.getAsociacion() != null) {
                         soc.getAsociacion().getSocias().remove(soc);

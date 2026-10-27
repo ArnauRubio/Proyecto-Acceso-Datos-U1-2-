@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
@@ -86,8 +85,6 @@ public class Juegos {
                     clearForm();
                 } catch (IllegalArgumentException ex) {
                     showError(ex.getMessage());
-                } catch (SQLException ex) {
-                    showError("No se pudo guardar el juego: " + ex.getMessage());
                 }
             }
         });
@@ -106,10 +103,14 @@ public class Juegos {
                         showError("Ya existe un juego con ese ID.");
                         return;
                     }
+                    if (actualizado.getId() != juegoSeleccionado.getId()) {
+                        showError("No se puede cambiar el ID de un juego existente.");
+                        return;
+                    }
                     actualizado.setAutor(juegoSeleccionado.getAutor());
                     actualizado.setDescripcion(juegoSeleccionado.getDescripcion());
                     actualizado.setFechaAlta(juegoSeleccionado.getFechaAlta());
-                    if (!juegoDao.update(actualizado, juegoSeleccionado.getId())) {
+                    if (!juegoDao.update(actualizado)) {
                         showError("No se encontró el juego en la base de datos.");
                         return;
                     }
@@ -128,8 +129,6 @@ public class Juegos {
                     clearForm();
                 } catch (IllegalArgumentException ex) {
                     showError(ex.getMessage());
-                } catch (SQLException ex) {
-                    showError("No se pudo actualizar el juego: " + ex.getMessage());
                 }
             }
         });
@@ -149,15 +148,7 @@ public class Juegos {
                         "¿Borrar el juego " + juegoSeleccionado.getNombre() + "?",
                         "Confirmar borrado", JOptionPane.YES_NO_OPTION);
                 if (confirmacion == JOptionPane.YES_OPTION) {
-                    try {
-                        if (!juegoDao.delete(juegoSeleccionado.getId())) {
-                            showError("No se encontró el juego en la base de datos.");
-                            return;
-                        }
-                    } catch (SQLException ex) {
-                        showError("No se pudo borrar el juego: " + ex.getMessage());
-                        return;
-                    }
+                    juegoDao.delete(juegoSeleccionado.getId());
                     allJuegos.remove(juegoSeleccionado);
                     refreshTable();
                     clearForm();

@@ -1,7 +1,7 @@
 package org.egibide.utils;
 
+import org.egibide.models.Participante;
 import org.egibide.models.Partida;
-import org.egibide.models.Socia;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
@@ -52,11 +52,16 @@ public class ModTabla_GesPartidas extends AbstractTableModel {
                     return "Sin jugadoras";
                 }
                 StringBuilder jugadoras = new StringBuilder();
-                for (Socia socia : partida.getJugadoras()) {
+                for (Participante participante : partida.getJugadoras()) {
                     if (jugadoras.length() > 0) {
                         jugadoras.append(", ");
                     }
-                    jugadoras.append(socia.getNombre()).append(" ").append(socia.getApellidos());
+                    if (participante.getSocia() == null) {
+                        jugadoras.append("Participante ").append(participante.getId());
+                    } else {
+                        jugadoras.append(participante.getSocia().getNombre()).append(" ")
+                                .append(participante.getSocia().getApellidos());
+                    }
                 }
                 return jugadoras.toString();
             case 6:
