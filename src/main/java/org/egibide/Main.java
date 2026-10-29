@@ -6,6 +6,7 @@ import org.egibide.models.ModoJuego;
 import org.egibide.models.Partida;
 import org.egibide.models.Socia;
 import org.egibide.utils.DatabaseConnection;
+import org.egibide.utils.DatabaseRelations;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -23,8 +24,10 @@ public class Main {
         DatabaseConnection.getInstance();
 
         List<Socia> socias = new SociaDaoImpl().getSocias();
+        DatabaseRelations.loadSociaAssociations(socias);
         List<Juego> juegos = cargarJuegos(socias);
         List<Partida> partidas = cargarPartidas(juegos);
+        DatabaseRelations.loadParticipants(partidas, socias);
 
         SwingUtilities.invokeLater(() -> {
             MenuPrincipal menu = new MenuPrincipal(socias, partidas, juegos);

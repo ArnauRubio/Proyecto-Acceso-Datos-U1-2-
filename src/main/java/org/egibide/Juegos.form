@@ -16,7 +16,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="afbd4" binding="panelSoc" layout-manager="GridLayoutManager" row-count="10" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="afbd4" binding="panelSoc" layout-manager="GridLayoutManager" row-count="10" column-count="10" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="20" left="20" bottom="20" right="20"/>
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -39,12 +39,12 @@
               </scrollpane>
               <hspacer id="9e5f1">
                 <constraints>
-                  <grid row="8" column="0" row-span="1" col-span="7" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="8" column="0" row-span="1" col-span="8" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
               </hspacer>
               <component id="ce383" class="javax.swing.JButton" binding="borrarButton" default-binding="true">
                 <constraints>
-                  <grid row="9" column="4" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <grid row="9" column="4" row-span="1" col-span="4" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="Borrar"/>
@@ -91,9 +91,6 @@
                     <item value="ID"/>
                     <item value="Nombre"/>
                     <item value="Duracion"/>
-                    <item value="Jugadores Max."/>
-                    <item value="Jugadores Min."/>
-                    <item value="Tematica"/>
                   </model>
                 </properties>
               </component>
@@ -113,38 +110,6 @@
                   <text value="Gestión de juegos:"/>
                 </properties>
               </component>
-              <component id="2f5ca" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="6" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="NºJugadores:"/>
-                </properties>
-              </component>
-              <component id="25d33" class="javax.swing.JTextField" binding="txtJugadoresDeseados">
-                <constraints>
-                  <grid row="6" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
-                  </grid>
-                </constraints>
-                <properties/>
-              </component>
-              <component id="75390" class="javax.swing.JButton" binding="buttonMostrar">
-                <constraints>
-                  <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="&gt;"/>
-                </properties>
-              </component>
-              <component id="17306" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="0" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Mostrar juego:"/>
-                </properties>
-              </component>
               <component id="31486" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -155,7 +120,7 @@
               </component>
               <component id="dba3f" class="javax.swing.JTextField" binding="txtCoopComp">
                 <constraints>
-                  <grid row="2" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="2" column="5" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -171,7 +136,7 @@
               </component>
               <component id="41814" class="javax.swing.JTextField" binding="txtID">
                 <constraints>
-                  <grid row="3" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="3" column="5" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -195,7 +160,7 @@
               </component>
               <component id="13260" class="javax.swing.JTextField" binding="txtDuracion">
                 <constraints>
-                  <grid row="4" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="4" column="5" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -203,7 +168,7 @@
               </component>
               <component id="5f4ad" class="javax.swing.JTextField" binding="txtMinJugadores">
                 <constraints>
-                  <grid row="5" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="5" column="5" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -211,7 +176,7 @@
               </component>
               <component id="55a34" class="javax.swing.JTextField" binding="txtMaxJugadores">
                 <constraints>
-                  <grid row="5" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="5" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -219,7 +184,7 @@
               </component>
               <component id="8f069" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="2" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="2" column="9" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="dueño"/>
@@ -227,7 +192,7 @@
               </component>
               <component id="c70e6" class="javax.swing.JTextField" binding="txtDueno">
                 <constraints>
-                  <grid row="2" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="2" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -235,7 +200,7 @@
               </component>
               <component id="c3613" class="javax.swing.JTextField" binding="txtLocalizacion">
                 <constraints>
-                  <grid row="3" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="3" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -243,7 +208,7 @@
               </component>
               <component id="6f8f" class="javax.swing.JTextField" binding="txtTematica">
                 <constraints>
-                  <grid row="4" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="4" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
@@ -251,7 +216,7 @@
               </component>
               <component id="d9b7a" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="3" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="3" column="9" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="localizacion"/>
@@ -259,7 +224,7 @@
               </component>
               <component id="5ffe4" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="4" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="4" column="9" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="tematica"/>
@@ -267,7 +232,7 @@
               </component>
               <component id="3c797" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="7" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="6" column="4" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="Partidas:"/>
@@ -275,7 +240,7 @@
               </component>
               <scrollpane id="8c641">
                 <constraints>
-                  <grid row="7" column="5" row-span="1" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="6" column="5" row-span="2" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
                 <border type="none"/>
@@ -308,11 +273,59 @@
               </component>
               <component id="f7fc2" class="javax.swing.JTextField" binding="txtNombre">
                 <constraints>
-                  <grid row="1" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                  <grid row="1" column="5" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
                 <properties/>
+              </component>
+              <component id="2f5ca" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="9" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="NºJugadores:"/>
+                </properties>
+              </component>
+              <component id="25d33" class="javax.swing.JTextField" binding="txtJugadoresDeseados">
+                <constraints>
+                  <grid row="1" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="17306" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Mostrar juego:"/>
+                </properties>
+              </component>
+              <component id="75390" class="javax.swing.JButton" binding="buttonMostrar">
+                <constraints>
+                  <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="&gt;"/>
+                </properties>
+              </component>
+              <component id="75b09" class="javax.swing.JButton" binding="buttonLimpiar">
+                <constraints>
+                  <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Limpiar"/>
+                </properties>
+              </component>
+              <component id="e64ce" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="9" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Vaciar jeugo"/>
+                </properties>
               </component>
             </children>
           </grid>

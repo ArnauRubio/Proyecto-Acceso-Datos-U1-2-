@@ -10,7 +10,7 @@ public class ModTabla_GesPartidas extends AbstractTableModel {
     private final List<Partida> partidas;
 
     private final String[] titulos = {
-            "Id", "Juego", "Fecha", "Hora", "Jugadores deseados", "Jugadoras", "Ganadoras"
+            "Id", "Juego", "Fecha", "Hora", "Jugadores deseados", "Participantes", "Ganadoras"
     };
 
     /**
@@ -65,7 +65,22 @@ public class ModTabla_GesPartidas extends AbstractTableModel {
                 }
                 return jugadoras.toString();
             case 6:
-                return partida.getGanadoras().toString();
+                if (partida.getGanadoras().isEmpty()) {
+                    return "Sin ganadoras";
+                }
+                StringBuilder ganadoras = new StringBuilder();
+                for (Participante participante : partida.getGanadoras()) {
+                    if (ganadoras.length() > 0) {
+                        ganadoras.append(", ");
+                    }
+                    if (participante.getSocia() == null) {
+                        ganadoras.append("Participante ").append(participante.getId());
+                    } else {
+                        ganadoras.append(participante.getSocia().getNombre()).append(" ")
+                                .append(participante.getSocia().getApellidos());
+                    }
+                }
+                return ganadoras.toString();
             default:
                 throw new IndexOutOfBoundsException("Índice de columna no válido: " + columnIndex);
         }

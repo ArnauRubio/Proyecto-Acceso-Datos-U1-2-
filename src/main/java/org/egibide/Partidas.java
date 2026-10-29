@@ -4,10 +4,13 @@ import org.egibide.models.Juego;
 import org.egibide.models.Participante;
 import org.egibide.models.Partida;
 import org.egibide.models.Socia;
+import org.egibide.utils.DatabaseRelations;
 import org.egibide.utils.ModTabla_GesPartidas;
 
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,6 +42,7 @@ public class Partidas {
         this.allSocias = allSocias;
         this.tableModel = new ModTabla_GesPartidas(allPartidas);
         table1.setModel(tableModel);
+        table1.getColumnModel().getColumn(5).setCellRenderer(new ParticipantesRenderer());
         this.sorter = new TableRowSorter<>(tableModel);
         table1.setRowSorter(sorter);
 
@@ -47,6 +51,12 @@ public class Partidas {
             public void actionPerformed(ActionEvent e) {
                 Partida partida = editarDatosPartida(null);
                 if (partida != null) {
+                    try {
+                        DatabaseRelations.savePartida(partida, true);
+                    } catch (java.sql.SQLException ex) {
+                        mostrarError("No se pudo guardar la partida y sus participantes: " + ex.getMessage());
+                        return;
+                    }
                     allPartidas.add(partida);
                     if (partida.getJuego() != null) {
                         partida.getJuego().getPartidas().add(partida);
@@ -67,6 +77,12 @@ public class Partidas {
                 }
                 Partida cambios = editarDatosPartida(seleccionada);
                 if (cambios != null) {
+                    try {
+                        DatabaseRelations.savePartida(cambios, false);
+                    } catch (java.sql.SQLException ex) {
+                        mostrarError("No se pudieron guardar los cambios de la partida: " + ex.getMessage());
+                        return;
+                    }
                     Juego juegoAnterior = seleccionada.getJuego();
                     seleccionada.setFecha(cambios.getFecha());
                     seleccionada.setHora(cambios.getHora());
@@ -74,6 +90,9 @@ public class Partidas {
                     seleccionada.setJuego(cambios.getJuego());
                     desvincularParticipantes(seleccionada);
                     seleccionada.setJugadoras(cambios.getJugadoras());
+                    for (Participante participante : seleccionada.getJugadoras()) {
+                        participante.setPartida(seleccionada);
+                    }
                     seleccionada.setGanadoras(cambios.getGanadoras());
                     vincularParticipantes(seleccionada);
                     if (juegoAnterior != null && juegoAnterior != cambios.getJuego()) {
@@ -99,6 +118,12 @@ public class Partidas {
                         "¿Borrar la partida " + seleccionada.getId() + "?", "Confirmar borrado",
                         JOptionPane.YES_NO_OPTION);
                 if (respuesta == JOptionPane.YES_OPTION) {
+                    try {
+                        DatabaseRelations.deletePartida(seleccionada);
+                    } catch (java.sql.SQLException ex) {
+                        mostrarError("No se pudo borrar la partida: " + ex.getMessage());
+                        return;
+                    }
                     allPartidas.remove(seleccionada);
                     if (seleccionada.getJuego() != null) {
                         seleccionada.getJuego().getPartidas().remove(seleccionada);
@@ -166,15 +191,29 @@ public class Partidas {
                 return this;
             }
         });
+        JList<Socia> ganadoras = new JList<>(allSocias.toArray(new Socia[0]));
+        ganadoras.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        ganadoras.setVisibleRowCount(Math.min(4, Math.max(1, allSocias.size())));
+        ganadoras.setCellRenderer(participantes.getCellRenderer());
         if (partidaOriginal != null && partidaOriginal.getJuego() != null) {
             juegos.setSelectedItem(partidaOriginal.getJuego());
         }
         if (partidaOriginal != null) {
+            List<Integer> indicesSeleccionados = new ArrayList<>();
+            List<Integer> indicesGanadoras = new ArrayList<>();
             for (Participante participante : partidaOriginal.getJugadoras()) {
                 if (participante.getSocia() != null) {
-                    participantes.setSelectedValue(participante.getSocia(), true);
+                    int indice = allSocias.indexOf(participante.getSocia());
+                    if (indice >= 0) {
+                        indicesSeleccionados.add(indice);
+                        if (participante.isGanadora()) {
+                            indicesGanadoras.add(indice);
+                        }
+                    }
                 }
             }
+            participantes.setSelectedIndices(indicesSeleccionados.stream().mapToInt(Integer::intValue).toArray());
+            ganadoras.setSelectedIndices(indicesGanadoras.stream().mapToInt(Integer::intValue).toArray());
         }
 
         JPanel formulario = new JPanel(new GridLayout(0, 2, 5, 5));
@@ -188,6 +227,8 @@ public class Partidas {
         formulario.add(jugadores);
         formulario.add(new JLabel("Participantes:"));
         formulario.add(new JScrollPane(participantes));
+        formulario.add(new JLabel("Ganadoras:"));
+        formulario.add(new JScrollPane(ganadoras));
 
         while (JOptionPane.showConfirmDialog(panelGestionPartidas, formulario,
                 partidaOriginal == null ? "Nueva partida" : "Editar partida",
@@ -211,20 +252,22 @@ public class Partidas {
                 if (participantes.getSelectedValuesList().size() > jugadoresDeseados) {
                     throw new IllegalArgumentException("No puede haber más participantes que jugadores deseados.");
                 }
+                if (!participantes.getSelectedValuesList().containsAll(ganadoras.getSelectedValuesList())) {
+                    throw new IllegalArgumentException("Solo pueden ser ganadoras las participantes seleccionadas.");
+                }
                 int id = partidaOriginal == null ? siguienteId() : partidaOriginal.getId();
                 Partida resultado = new Partida(id, new java.sql.Date(fechaPartida.getTime()),
                         horaPartida, jugadoresDeseados);
                 resultado.setJuego(juegoElegido);
-                resultado.setJugadoras(crearParticipantes(participantes.getSelectedValuesList(), partidaOriginal, resultado));
-                if (partidaOriginal != null) {
-                    List<Participante> ganadoras = new ArrayList<>();
-                    for (Participante participante : resultado.getJugadoras()) {
-                        if (participante.isGanadora()) {
-                            ganadoras.add(participante);
-                        }
+                resultado.setJugadoras(crearParticipantes(participantes.getSelectedValuesList(),
+                        ganadoras.getSelectedValuesList(), partidaOriginal, resultado));
+                List<Participante> ganadorasSeleccionadas = new ArrayList<>();
+                for (Participante participante : resultado.getJugadoras()) {
+                    if (participante.isGanadora()) {
+                        ganadorasSeleccionadas.add(participante);
                     }
-                    resultado.setGanadoras(ganadoras);
                 }
+                resultado.setGanadoras(ganadorasSeleccionadas);
                 return resultado;
             } catch (NumberFormatException ex) {
                 mostrarError("La hora y el número de jugadores deben ser números enteros.");
@@ -256,7 +299,8 @@ public class Partidas {
         return idMaximo + 1;
     }
 
-    private List<Participante> crearParticipantes(List<Socia> socias, Partida partidaOriginal, Partida partida) {
+    private List<Participante> crearParticipantes(List<Socia> socias, List<Socia> ganadoras,
+                                                  Partida partidaOriginal, Partida partida) {
         List<Participante> participantes = new ArrayList<>();
         int id = siguienteIdParticipante();
         for (Socia socia : socias) {
@@ -264,6 +308,7 @@ public class Partidas {
             Participante participante = existente == null ? new Participante(id++, false) : existente;
             participante.setSocia(socia);
             participante.setPartida(partida);
+            participante.setGanadora(ganadoras.contains(socia));
             participantes.add(participante);
         }
         return participantes;
@@ -358,5 +403,29 @@ public class Partidas {
 
     private void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(panelGestionPartidas, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private static class ParticipantesRenderer extends JTextArea implements TableCellRenderer {
+        private ParticipantesRenderer() {
+            setLineWrap(true);
+            setWrapStyleWord(true);
+            setOpaque(true);
+            setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
+            setText(value == null ? "" : value.toString());
+            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
+            setFont(table.getFont());
+            setSize(table.getColumnModel().getColumn(column).getWidth(), Integer.MAX_VALUE);
+            int height = Math.max(table.getRowHeight(), getPreferredSize().height);
+            if (table.getRowHeight(row) != height) {
+                table.setRowHeight(row, height);
+            }
+            return this;
+        }
     }
 }
