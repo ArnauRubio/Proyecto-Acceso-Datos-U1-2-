@@ -4,6 +4,7 @@ import org.egibide.models.Juego;
 import org.egibide.models.ModoJuego;
 import org.egibide.models.Socia;
 import org.egibide.idao.JuegoDaoImpl;
+import org.egibide.utils.DatabaseInserts;
 import org.egibide.utils.ModTabla_GesJuegos;
 
 import javax.swing.*;
@@ -28,6 +29,7 @@ public class Juegos {
     private JTextField txtCoopComp;
     private JTextField txtNombre;
     private JButton buttonMostrar;
+    private JButton buttonLimpiar;
     private JTextPane textPane1;
     private JTextField txtJugadoresDeseados;
     private JTextField txtDuracion;
@@ -47,6 +49,12 @@ public class Juegos {
         this.allJuegos = allJuegos;
         this.allSocias = allSocias;
         tableGestionSoc.setModel(new ModTabla_GesJuegos(allJuegos));
+
+        buttonLimpiar.setText("Limpiar");
+        buttonLimpiar.addActionListener(e -> {
+            clearForm();
+            tableGestionSoc.clearSelection();
+        });
 
         buttonMostrar.addActionListener(new ActionListener() {
             @Override
@@ -76,7 +84,7 @@ public class Juegos {
                         showError("Ya existe un juego con ese ID.");
                         return;
                     }
-                    if (juegoDao.addJuego(nuevo) == 0) {
+                    if (DatabaseInserts.insertJuego(nuevo) == 0) {
                         showError("No se pudo guardar el juego.");
                         return;
                     }
@@ -85,6 +93,8 @@ public class Juegos {
                     clearForm();
                 } catch (IllegalArgumentException ex) {
                     showError(ex.getMessage());
+                } catch (java.sql.SQLException ex) {
+                    showError("No se pudo guardar el juego: " + ex.getMessage());
                 }
             }
         });
@@ -110,7 +120,7 @@ public class Juegos {
                     actualizado.setAutor(juegoSeleccionado.getAutor());
                     actualizado.setDescripcion(juegoSeleccionado.getDescripcion());
                     actualizado.setFechaAlta(juegoSeleccionado.getFechaAlta());
-                    if (!juegoDao.update(actualizado)) {
+                    if (!DatabaseInserts.updateJuego(actualizado)) {
                         showError("No se encontró el juego en la base de datos.");
                         return;
                     }
@@ -129,6 +139,8 @@ public class Juegos {
                     clearForm();
                 } catch (IllegalArgumentException ex) {
                     showError(ex.getMessage());
+                } catch (java.sql.SQLException ex) {
+                    showError("No se pudo actualizar el juego: " + ex.getMessage());
                 }
             }
         });
@@ -176,12 +188,7 @@ public class Juegos {
             if (duracion <= 0 || minJugadores <= 0 || maxJugadores < minJugadores) {
                 throw new IllegalArgumentException("Duración y jugadores deben ser válidos; el máximo no puede ser menor que el mínimo.");
             }
-            ModoJuego modoJuego;
-            try {
-                modoJuego = ModoJuego.valueOf(modo.toUpperCase(Locale.ROOT));
-            } catch (IllegalArgumentException ex) {
-                throw new IllegalArgumentException("El modo debe ser COOPERATIVO o COMPETITIVO.");
-            }
+            ModoJuego modoJuego = parseModoJuego(modo);
             Socia propietaria = buscarPropietaria(propietarioTexto);
             if (!propietarioTexto.isEmpty() && propietaria == null) {
                 throw new IllegalArgumentException("No se encontró una socia con ese ID o nombre.");
@@ -203,6 +210,21 @@ public class Juegos {
             }
         }
         return null;
+    }
+
+    private ModoJuego parseModoJuego(String modo) {
+        switch (modo.trim().toLowerCase(Locale.ROOT)) {
+            case "cooperativo":
+            case "cooperativa":
+            case "coop":
+                return ModoJuego.COOPERATIVO;
+            case "competitivo":
+            case "competitiva":
+            case "comp":
+                return ModoJuego.COMPETITIVO;
+            default:
+                throw new IllegalArgumentException("El modo debe ser cooperativo (coop) o competitivo (comp).");
+        }
     }
 
     private Juego findById(int id) {
@@ -268,7 +290,25 @@ public class Juegos {
         txtDueno.setText(juego.getDueno() == null ? "" : String.valueOf(juego.getDueno().getId()));
         txtLocalizacion.setText(juego.getLocalizacion() == null ? "" : juego.getLocalizacion());
         txtTematica.setText(juego.getTematica() == null ? "" : juego.getTematica());
-        textPane1.setText(String.valueOf(juego.getPartidas().size()));
+        StringBuilder partidas = new StringBuilder();
+        for (org.egibide.models.Partida partida : juego.getPartidas()) {
+            if (partidas.length() > 0) {
+                partidas.append('\n');
+            }
+            partidas.append(partida.getFecha()).append(" a las ").append(partida.getHora());
+            if (!partida.getJugadoras().isEmpty()) {
+                partidas.append(" - ");
+                for (int i = 0; i < partida.getJugadoras().size(); i++) {
+                    if (i > 0) {
+                        partidas.append(", ");
+                    }
+                    Socia participante = partida.getJugadoras().get(i).getSocia();
+                    partidas.append(participante == null ? "Participante" : participante.getNombre() + " "
+                            + participante.getApellidos());
+                }
+            }
+        }
+        textPane1.setText(partidas.length() == 0 ? "Sin partidas" : partidas.toString());
     }
 
     private void refreshTable() {

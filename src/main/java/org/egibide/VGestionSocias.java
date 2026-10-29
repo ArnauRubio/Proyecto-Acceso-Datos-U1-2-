@@ -1,7 +1,11 @@
 package org.egibide;
 
 import org.egibide.idao.SociaDaoImpl;
+import org.egibide.models.Asociacion;
+import org.egibide.models.Partida;
+import org.egibide.models.Participante;
 import org.egibide.models.Socia;
+import org.egibide.utils.DatabaseInserts;
 import org.egibide.utils.ModTabla_GesSoc;
 
 import javax.swing.*;
@@ -22,8 +26,12 @@ public class VGestionSocias {
     private JTextField txtApellido;
     private JTextField txtNombre;
     private JButton buttonMostrar;
+    private JButton buttonLimpiar;
     private JTextPane textPane1;
     private JPanel panelGestionSoc;
+    private JTextField txtEdad;
+    private JTextField txtEmail;
+    private JTextField txtAsociacion;
 
     private final SociaDaoImpl sociaDao = new SociaDaoImpl();
     Socia soc = null;
@@ -36,6 +44,13 @@ public class VGestionSocias {
     public VGestionSocias(List<Socia> all_socias) {
 
         tableGestionSoc.setModel(new ModTabla_GesSoc(all_socias));
+
+        buttonLimpiar.setText("Limpiar");
+        buttonLimpiar.addActionListener(e -> {
+            clearForm();
+            txtBuscar.setText("");
+            tableGestionSoc.clearSelection();
+        });
 
         nuevoButton.addActionListener(new ActionListener() {
             @Override
@@ -61,22 +76,28 @@ public class VGestionSocias {
                     return;
                 }
 
-                Socia nuevoSoc = new Socia(id, nombre, apellido, 0, "");
-                if (sociaDao.addSocia(nuevoSoc) == 0) {
-                    showError("No se pudo guardar la socia.");
-                    return;
+                try {
+                    int edad = txtEdad.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtEdad.getText().trim());
+                    Socia nuevoSoc = new Socia(id, nombre, apellido, edad, txtEmail.getText().trim());
+                    Asociacion asociacion = DatabaseInserts.findAssociation(txtAsociacion.getText());
+                    if (DatabaseInserts.insertSocia(nuevoSoc, asociacion) == 0) {
+                        showError("No se pudo guardar la socia.");
+                        return;
+                    }
+                    nuevoSoc.setAsociacion(asociacion);
+                    asociacion.getSocias().add(nuevoSoc);
+                    all_socias.add(nuevoSoc);
+                    JOptionPane.showMessageDialog(null, "Socia creada correctamente", "Nueva socia", JOptionPane.INFORMATION_MESSAGE);
+                    clearForm();
+                    tableGestionSoc.setModel(new ModTabla_GesSoc(all_socias));
+                    soc = null;
+                } catch (java.sql.SQLException ex) {
+                    showError("No se pudo guardar la socia: " + ex.getMessage());
+                } catch (NumberFormatException ex) {
+                    showError("La edad debe ser un número entero.");
+                } catch (IllegalArgumentException ex) {
+                    showError(ex.getMessage());
                 }
-
-                all_socias.add(nuevoSoc);
-                JOptionPane.showMessageDialog(null, "Socia creada correctamente", "Nueva socia", JOptionPane.INFORMATION_MESSAGE);
-
-                txtNombre.setText("");
-                txtApellido.setText("");
-                txtID.setText("");
-
-                tableGestionSoc.setModel(new ModTabla_GesSoc(all_socias));
-
-                soc = null;
             }
         });
 
@@ -108,23 +129,48 @@ public class VGestionSocias {
                         showError("Ya existe una socia con ese ID.");
                         return;
                     }
-                    Socia actualizada = new Socia(idNuevo, nombre, apellidos, soc.getEdad(), soc.getEmail());
                     if (idNuevo != idOriginal) {
                         showError("No se puede cambiar el ID de una socia existente.");
                         return;
                     }
-                    if (!sociaDao.update(actualizada)) {
-                        showError("No se encontró la socia en la base de datos.");
+                    try {
+                        int edad = txtEdad.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtEdad.getText().trim());
+                        Asociacion nuevaAsociacion = DatabaseInserts.findAssociation(txtAsociacion.getText());
+                        Socia actualizada = new Socia(idNuevo, nombre, apellidos, edad, txtEmail.getText().trim());
+                        if (!DatabaseInserts.updateSocia(actualizada, nuevaAsociacion)) {
+                            showError("No se encontró la socia en la base de datos.");
+                            return;
+                        }
+                        Asociacion asociacionAnterior = soc.getAsociacion();
+                        if (asociacionAnterior == null || asociacionAnterior.getId() != nuevaAsociacion.getId()) {
+                            if (asociacionAnterior != null) {
+                                asociacionAnterior.getSocias().remove(soc);
+                            }
+                            nuevaAsociacion.getSocias().add(soc);
+                        }
+                        soc.setNombre(nombre);
+                        soc.setApellidos(apellidos);
+                        soc.setEdad(edad);
+                        soc.setEmail(txtEmail.getText().trim());
+                        soc.setAsociacion(nuevaAsociacion);
+                    } catch (java.sql.SQLException ex) {
+                        showError("No se pudo actualizar la socia: " + ex.getMessage());
+                        return;
+                    } catch (NumberFormatException ex) {
+                        showError("La edad debe ser un número entero.");
+                        return;
+                    } catch (IllegalArgumentException ex) {
+                        showError(ex.getMessage());
                         return;
                     }
-
-                    soc.setNombre(nombre);
-                    soc.setApellidos(apellidos);
-                    soc.setId(idNuevo);
 
                     txtNombre.setText("");
                     txtApellido.setText("");
                     txtID.setText("");
+                    txtEdad.setText("");
+                    txtEmail.setText("");
+                    txtAsociacion.setText("");
+                    textPane1.setText("");
 
                     tableGestionSoc.setModel(new ModTabla_GesSoc(all_socias));
 
@@ -149,6 +195,10 @@ public class VGestionSocias {
                     txtNombre.setText("");
                     txtApellido.setText("");
                     txtID.setText("");
+                    txtEdad.setText("");
+                    txtEmail.setText("");
+                    txtAsociacion.setText("");
+                    textPane1.setText("");
 
 
                     tableGestionSoc.setModel(new ModTabla_GesSoc(all_socias));
@@ -169,15 +219,11 @@ public class VGestionSocias {
 
                 if (soc == null) {
                     txtBuscar.setText("No encontrado.");
-                    txtNombre.setText("");
-                    txtApellido.setText("");
-                    txtID.setText("");
+                    clearForm();
 
                 } else {
                     txtBuscar.setText("");
-                    txtNombre.setText(soc.getNombre());
-                    txtApellido.setText(soc.getApellidos());
-                    txtID.setText(String.valueOf(soc.getId()));
+                    showSocia(soc);
 
                 }
             }
@@ -192,11 +238,15 @@ public class VGestionSocias {
                 } else {
                     soc = all_socias.get(tableGestionSoc.convertRowIndexToModel(tupla));
 
-                    txtNombre.setText(soc.getNombre());
-                    txtApellido.setText(soc.getApellidos());
-                    txtID.setText(String.valueOf(soc.getId()));
+                    showSocia(soc);
 
                 }
+            }
+        });
+        buttonLimpiar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
     }
@@ -235,5 +285,40 @@ public class VGestionSocias {
 
     private void showError(String mensaje) {
         JOptionPane.showMessageDialog(panelSoc, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showSocia(Socia socia) {
+        txtNombre.setText(socia.getNombre());
+        txtApellido.setText(socia.getApellidos());
+        txtID.setText(String.valueOf(socia.getId()));
+        txtEdad.setText(String.valueOf(socia.getEdad()));
+        txtEmail.setText(socia.getEmail() == null ? "" : socia.getEmail());
+        Asociacion asociacion = socia.getAsociacion();
+        txtAsociacion.setText(asociacion == null ? "Sin asociación" : asociacion.getNombre());
+
+        StringBuilder partidas = new StringBuilder();
+        for (Participante participante : socia.getParticipaciones()) {
+            Partida partida = participante.getPartida();
+            if (partida == null) {
+                continue;
+            }
+            if (partidas.length() > 0) {
+                partidas.append('\n');
+            }
+            partidas.append(partida.getJuego() == null ? "Juego sin nombre" : partida.getJuego().getNombre())
+                    .append(" - ").append(partida.getFecha()).append(" a las ").append(partida.getHora());
+        }
+        textPane1.setText(partidas.length() == 0 ? "Sin partidas" : partidas.toString());
+    }
+
+    private void clearForm() {
+        txtNombre.setText("");
+        txtApellido.setText("");
+        txtID.setText("");
+        txtEdad.setText("");
+        txtEmail.setText("");
+        txtAsociacion.setText("");
+        textPane1.setText("");
+        soc = null;
     }
 }
