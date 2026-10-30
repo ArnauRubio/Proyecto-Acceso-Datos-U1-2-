@@ -17,12 +17,18 @@ import org.egibide.models.Socia;
 
 import java.util.List;
 
+/**
+ * Implementación del repositorio de juegos y ensamblado de sus relaciones.
+ */
 public class JuegoRepositoryImpl implements JuegoRepository {
 
     private AsociacionDao asociacionDao = new AsociacionDaoImpl();
     private JuegoDao juegoDao = new JuegoDaoImpl();
     private PartidaDao partidaDao = new PartidaDaoImpl();
 
+    /**
+     * Recupera el juego, su asociación y las partidas relacionadas.
+     */
     @Override
     public Juego getJuego(int id_juego) {
         Juego juego = juegoDao.getJuego(id_juego);

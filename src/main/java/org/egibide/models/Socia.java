@@ -3,6 +3,9 @@ package org.egibide.models;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Información de una socia, su asociación y sus participaciones en partidas.
+ */
 public class Socia {
     private int id;
     private String nombre;
@@ -13,6 +16,15 @@ public class Socia {
     private Asociacion asociacion;
     private List<Participante> participaciones;
 
+    /**
+     * Crea una socia e inicializa su lista de participaciones.
+     *
+     * @param id        identificador de la socia
+     * @param nombre    nombre
+     * @param apellidos apellidos
+     * @param edad      edad
+     * @param email     correo electrónico
+     */
     public Socia(int id, String nombre, String apellidos, int edad, String email) {
         this.id = id;
         this.nombre = nombre;

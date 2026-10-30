@@ -1,11 +1,12 @@
 package org.egibide;
 
 import org.egibide.idao.SociaDaoImpl;
+import org.egibide.idao.AsociacionDaoImpl;
+import org.egibide.dao.AsociacionDao;
 import org.egibide.models.Asociacion;
 import org.egibide.models.Partida;
 import org.egibide.models.Participante;
 import org.egibide.models.Socia;
-import org.egibide.utils.DatabaseInserts;
 import org.egibide.utils.ModTabla_GesSoc;
 
 import javax.swing.*;
@@ -13,6 +14,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+/**
+ * Pantalla Swing para consultar y mantener las socias de la asociación.
+ */
 public class VGestionSocias {
     public JPanel panelSoc;
     private JTable tableGestionSoc;
@@ -34,12 +38,13 @@ public class VGestionSocias {
     private JTextField txtAsociacion;
 
     private final SociaDaoImpl sociaDao = new SociaDaoImpl();
+    private final AsociacionDao asociacionDao = new AsociacionDaoImpl();
     Socia soc = null;
 
     /**
-     * Esta ventana permite al Administrador leer, crear, editar y borrar a los Jugadores.
+     * Inicializa la tabla y los controles para crear, editar, buscar y borrar socias.
      *
-     * @param all_socias, para mostrarlos en el JList.
+     * @param all_socias lista compartida que se muestra y actualiza desde esta pantalla
      */
     public VGestionSocias(List<Socia> all_socias) {
 
@@ -79,8 +84,8 @@ public class VGestionSocias {
                 try {
                     int edad = txtEdad.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtEdad.getText().trim());
                     Socia nuevoSoc = new Socia(id, nombre, apellido, edad, txtEmail.getText().trim());
-                    Asociacion asociacion = DatabaseInserts.findAssociation(txtAsociacion.getText());
-                    if (DatabaseInserts.insertSocia(nuevoSoc, asociacion) == 0) {
+                    Asociacion asociacion = asociacionDao.findAssociation(txtAsociacion.getText());
+                    if (sociaDao.insertSocia(nuevoSoc, asociacion) == 0) {
                         showError("No se pudo guardar la socia.");
                         return;
                     }
@@ -135,9 +140,9 @@ public class VGestionSocias {
                     }
                     try {
                         int edad = txtEdad.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtEdad.getText().trim());
-                        Asociacion nuevaAsociacion = DatabaseInserts.findAssociation(txtAsociacion.getText());
+                        Asociacion nuevaAsociacion = asociacionDao.findAssociation(txtAsociacion.getText());
                         Socia actualizada = new Socia(idNuevo, nombre, apellidos, edad, txtEmail.getText().trim());
-                        if (!DatabaseInserts.updateSocia(actualizada, nuevaAsociacion)) {
+                        if (!sociaDao.updateSocia(actualizada, nuevaAsociacion)) {
                             showError("No se encontró la socia en la base de datos.");
                             return;
                         }
@@ -208,10 +213,6 @@ public class VGestionSocias {
             }
         });
 
-        /**
-         * Usa un filtro con comboBox y una consulta para buscar un jugador de la tabla.
-         * @see buscar();
-         */
         buscarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -251,6 +252,14 @@ public class VGestionSocias {
         });
     }
 
+    /**
+     * Busca una socia por ID, nombre o apellidos según el filtro seleccionado.
+     *
+     * @param filtro     criterio de búsqueda: {@code ID}, {@code Nombre} o apellidos
+     * @param consulta   texto que se compara con el criterio
+     * @param all_socias socias en las que se realiza la búsqueda
+     * @return primera socia coincidente o null si no hay coincidencias
+     */
     public Socia buscar(String filtro, String consulta, List<Socia> all_socias) {
         if (filtro.equals("ID")) {
             for (Socia socia : all_socias) {
@@ -274,6 +283,9 @@ public class VGestionSocias {
         return null;
     }
 
+    /**
+     * Busca una socia por ID en la lista cargada en la pantalla.
+     */
     private Socia findById(List<Socia> socias, int id) {
         for (Socia socia : socias) {
             if (socia.getId() == id) {
@@ -283,10 +295,16 @@ public class VGestionSocias {
         return null;
     }
 
+    /**
+     * Muestra un mensaje de error asociado a esta ventana.
+     */
     private void showError(String mensaje) {
         JOptionPane.showMessageDialog(panelSoc, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Rellena el formulario y el resumen de partidas con los datos de una socia.
+     */
     private void showSocia(Socia socia) {
         txtNombre.setText(socia.getNombre());
         txtApellido.setText(socia.getApellidos());
@@ -311,6 +329,9 @@ public class VGestionSocias {
         textPane1.setText(partidas.length() == 0 ? "Sin partidas" : partidas.toString());
     }
 
+    /**
+     * Limpia los campos del formulario y descarta la socia seleccionada.
+     */
     private void clearForm() {
         txtNombre.setText("");
         txtApellido.setText("");

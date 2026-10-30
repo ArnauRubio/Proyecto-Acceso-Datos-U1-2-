@@ -6,6 +6,9 @@ import org.egibide.models.Partida;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
+/**
+ * Modelo de tabla Swing que presenta partidas y resume participantes y ganadoras.
+ */
 public class ModTabla_GesPartidas extends AbstractTableModel {
     private final List<Partida> partidas;
 
@@ -14,25 +17,39 @@ public class ModTabla_GesPartidas extends AbstractTableModel {
     };
 
     /**
-     * Muestra la información de las partidas registradas.
+     * Crea el modelo usando la lista compartida que muestra la tabla.
      *
-     * @param partidas lista de partidas
+     * @param partidas lista de partidas que se presentará
      */
     public ModTabla_GesPartidas(List<Partida> partidas) {
         this.partidas = partidas;
     }
 
 
+    /**
+     * @return número de filas, una por partida
+     */
     @Override
     public int getRowCount() {
         return partidas.size();
     }
 
+    /**
+     * @return número de columnas de la vista de partidas
+     */
     @Override
     public int getColumnCount() {
         return titulos.length;
     }
 
+    /**
+     * Devuelve el dato o resumen que se presenta en una celda.
+     *
+     * @param rowIndex    índice de la fila
+     * @param columnIndex índice de la columna
+     * @return valor que se mostrará en la celda
+     * @throws IndexOutOfBoundsException si el índice de columna no es válido
+     */
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         Partida partida = partidas.get(rowIndex);
@@ -86,6 +103,12 @@ public class ModTabla_GesPartidas extends AbstractTableModel {
         }
     }
 
+    /**
+     * Devuelve el encabezado de la columna indicada.
+     *
+     * @param column índice de la columna
+     * @return título de la columna
+     */
     @Override
     public String getColumnName(int column) {
         return titulos[column];

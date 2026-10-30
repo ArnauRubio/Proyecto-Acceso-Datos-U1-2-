@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
 
+/**
+ * Representa una asociación y las socias y juegos vinculados a ella.
+ */
 public class Asociacion {
     private int id;
     private String nombre;
@@ -14,9 +17,21 @@ public class Asociacion {
     private List<Socia> socias;
     private List<Juego> juegos;
 
+    /**
+     * Crea una asociación vacía, principalmente para su construcción progresiva.
+     */
     public Asociacion() {
     }
 
+    /**
+     * Crea una asociación con sus datos principales e inicializa sus colecciones.
+     *
+     * @param id             identificador de la asociación
+     * @param nombre         nombre de la asociación
+     * @param fecha_apertura fecha de apertura
+     * @param direccion      dirección de la asociación
+     * @param cif            identificador fiscal
+     */
     public Asociacion(int id, String nombre, Date fecha_apertura, String direccion, String cif) {
         this.id = id;
         this.nombre = nombre;

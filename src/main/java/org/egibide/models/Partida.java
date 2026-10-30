@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Representa una sesión de juego, con fecha, juego asociado y participantes.
+ */
 public class Partida {
     private int id;
     private Date fecha;
@@ -14,6 +17,14 @@ public class Partida {
     private Juego juego;
     private List<Participante> jugadoras;
 
+    /**
+     * Crea una partida e inicializa vacías las listas de participantes y ganadoras.
+     *
+     * @param id                identificador de la partida
+     * @param fecha             fecha programada
+     * @param hora              hora programada
+     * @param jugadoresDeseados número de participantes que se desea reunir
+     */
     public Partida(int id, Date fecha, int hora, int jugadoresDeseados) {
         this.id = id;
         this.fecha = fecha;

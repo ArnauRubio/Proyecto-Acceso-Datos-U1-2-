@@ -4,7 +4,6 @@ import org.egibide.models.Juego;
 import org.egibide.models.ModoJuego;
 import org.egibide.models.Socia;
 import org.egibide.idao.JuegoDaoImpl;
-import org.egibide.utils.DatabaseInserts;
 import org.egibide.utils.ModTabla_GesJuegos;
 
 import javax.swing.*;
@@ -14,6 +13,9 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Pantalla Swing para consultar y mantener el catálogo de juegos.
+ */
 public class Juegos {
     JPanel panelGestionJuegos;
     private JPanel panelGestionSoc;
@@ -45,6 +47,12 @@ public class Juegos {
     private final JuegoDaoImpl juegoDao = new JuegoDaoImpl();
     private Juego juegoSeleccionado;
 
+    /**
+     * Inicializa la tabla y los controles de gestión de juegos.
+     *
+     * @param allJuegos lista compartida de juegos que se muestra y actualiza
+     * @param allSocias socias disponibles para seleccionar una propietaria
+     */
     public Juegos(List<Juego> allJuegos, List<Socia> allSocias) {
         this.allJuegos = allJuegos;
         this.allSocias = allSocias;
@@ -84,7 +92,7 @@ public class Juegos {
                         showError("Ya existe un juego con ese ID.");
                         return;
                     }
-                    if (DatabaseInserts.insertJuego(nuevo) == 0) {
+                    if (juegoDao.insertJuego(nuevo) == 0) {
                         showError("No se pudo guardar el juego.");
                         return;
                     }
@@ -120,7 +128,7 @@ public class Juegos {
                     actualizado.setAutor(juegoSeleccionado.getAutor());
                     actualizado.setDescripcion(juegoSeleccionado.getDescripcion());
                     actualizado.setFechaAlta(juegoSeleccionado.getFechaAlta());
-                    if (!DatabaseInserts.updateJuego(actualizado)) {
+                    if (!juegoDao.updateJuego(actualizado)) {
                         showError("No se encontró el juego en la base de datos.");
                         return;
                     }
@@ -169,6 +177,12 @@ public class Juegos {
         });
     }
 
+    /**
+     * Valida los campos del formulario y construye el juego que se va a guardar.
+     *
+     * @return juego construido a partir de los datos introducidos
+     * @throws IllegalArgumentException si faltan datos o alguno no es válido
+     */
     private Juego juegoDesdeFormulario() {
         String nombre = txtNombre.getText().trim();
         String modo = txtCoopComp.getText().trim();
@@ -202,6 +216,9 @@ public class Juegos {
         }
     }
 
+    /**
+     * Busca una socia por ID o por nombre completo.
+     */
     private Socia buscarPropietaria(String consulta) {
         for (Socia socia : allSocias) {
             if (String.valueOf(socia.getId()).equals(consulta)
@@ -212,6 +229,9 @@ public class Juegos {
         return null;
     }
 
+    /**
+     * Convierte las variantes de texto admitidas en una modalidad de juego.
+     */
     private ModoJuego parseModoJuego(String modo) {
         switch (modo.trim().toLowerCase(Locale.ROOT)) {
             case "cooperativo":
@@ -236,6 +256,9 @@ public class Juegos {
         return null;
     }
 
+    /**
+     * Busca y selecciona el primer juego que coincide con el filtro del formulario.
+     */
     private void buscarJuego() {
         String consulta = txtBuscar.getText().trim();
         if (consulta.isEmpty()) {
@@ -278,6 +301,9 @@ public class Juegos {
         showError("No se encontró ningún juego.");
     }
 
+    /**
+     * Muestra los datos y las partidas de un juego en los campos de la pantalla.
+     */
     private void showJuego(Juego juego) {
         juegoSeleccionado = juego;
         txtID.setText(String.valueOf(juego.getId()));
@@ -311,10 +337,16 @@ public class Juegos {
         textPane1.setText(partidas.length() == 0 ? "Sin partidas" : partidas.toString());
     }
 
+    /**
+     * Actualiza el modelo de la tabla tras modificar la lista de juegos.
+     */
     private void refreshTable() {
         tableGestionSoc.setModel(new ModTabla_GesJuegos(allJuegos));
     }
 
+    /**
+     * Limpia los campos y quita la selección de juego actual.
+     */
     private void clearForm() {
         txtID.setText("");
         txtNombre.setText("");

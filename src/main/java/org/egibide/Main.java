@@ -1,12 +1,12 @@
 package org.egibide;
 
 import org.egibide.idao.SociaDaoImpl;
+import org.egibide.idao.ParticipanteDaoImpl;
 import org.egibide.models.Juego;
 import org.egibide.models.ModoJuego;
 import org.egibide.models.Partida;
 import org.egibide.models.Socia;
 import org.egibide.utils.DatabaseConnection;
-import org.egibide.utils.DatabaseRelations;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -19,15 +19,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Punto de entrada: carga los datos y abre la ventana principal de la aplicación.
+ */
 public class Main {
+    /**
+     * Inicializa la conexión, carga las entidades y muestra la interfaz Swing.
+     *
+     * @param args argumentos de línea de comandos (no utilizados)
+     * @throws SQLException si falla la conexión o la carga de datos
+     */
     public static void main(String[] args) throws SQLException {
         DatabaseConnection.getInstance();
 
         List<Socia> socias = new SociaDaoImpl().getSocias();
-        DatabaseRelations.loadSociaAssociations(socias);
+        new SociaDaoImpl().loadSociaAssociations(socias);
         List<Juego> juegos = cargarJuegos(socias);
         List<Partida> partidas = cargarPartidas(juegos);
-        DatabaseRelations.loadParticipants(partidas, socias);
+        new ParticipanteDaoImpl().loadParticipants(partidas, socias);
 
         SwingUtilities.invokeLater(() -> {
             MenuPrincipal menu = new MenuPrincipal(socias, partidas, juegos);
@@ -40,6 +49,13 @@ public class Main {
         });
     }
 
+    /**
+     * Carga los juegos y resuelve las propietarias contra las socias cargadas.
+     *
+     * @param socias socias disponibles para resolver la propietaria de cada juego
+     * @return juegos recuperados de la base de datos
+     * @throws SQLException si falla la consulta
+     */
     private static List<Juego> cargarJuegos(List<Socia> socias) throws SQLException {
         String query = "select id_juego, nombre, autor, descripcion, min_jugadores, max_jugadores, "
                 + "duracion, tematica, modo_juego, localizacion, dueno, fecha_alta from juego";
@@ -76,6 +92,13 @@ public class Main {
         return juegos;
     }
 
+    /**
+     * Carga las partidas y las enlaza con los juegos que ya están en memoria.
+     *
+     * @param juegos juegos previamente cargados
+     * @return partidas recuperadas de la base de datos
+     * @throws SQLException si falla la consulta
+     */
     private static List<Partida> cargarPartidas(List<Juego> juegos) throws SQLException {
         String query = "select id_partida, fecha, hora, jugadores_deseados, id_juego_fk from partida";
         Map<Integer, Juego> juegosPorId = new HashMap<>();

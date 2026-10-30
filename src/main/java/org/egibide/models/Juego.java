@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Datos de un juego de mesa y sus relaciones con propietaria, asociación y partidas.
+ */
 public class Juego {
     private int id;
     private String nombre;
@@ -21,6 +24,22 @@ public class Juego {
     private Asociacion asociacion;
     private List<Partida> partidas;
 
+    /**
+     * Crea un juego con todos sus datos; la lista de partidas empieza vacía.
+     *
+     * @param id           identificador del juego
+     * @param nombre       nombre del juego
+     * @param autor        autor o autora
+     * @param descripcion  descripción del juego
+     * @param minJugadores mínimo de participantes
+     * @param maxJugadores máximo de participantes
+     * @param duracion     duración estimada
+     * @param tematica     temática del juego
+     * @param modoJuego    modalidad cooperativa o competitiva
+     * @param localizacion ubicación física
+     * @param dueno        socia propietaria; puede ser null
+     * @param fechaAlta    fecha de alta del juego
+     */
     public Juego(int id, String nombre, String autor, String descripcion, int minJugadores, int maxJugadores, int duracion, String tematica, ModoJuego modoJuego, String localizacion, Socia dueno, Date fechaAlta) {
         this.id = id;
         this.nombre = nombre;

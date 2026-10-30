@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Proporciona la conexión MariaDB compartida por los DAO de la aplicación.
+ */
 public class DatabaseConnection {
     private static DatabaseConnection instance;
     private Connection connection;
@@ -22,10 +25,21 @@ public class DatabaseConnection {
         }
     }
 
+    /**
+     * Devuelve la conexión JDBC compartida por los DAO.
+     *
+     * @return conexión JDBC activa de la aplicación
+     */
     public Connection getConnection() {
         return connection;
     }
 
+    /**
+     * Obtiene la instancia única y vuelve a abrir la conexión si se cerró.
+     *
+     * @return proveedor de la conexión de base de datos
+     * @throws SQLException si no se puede inicializar o reabrir la conexión
+     */
     public static DatabaseConnection getInstance() throws SQLException {
         if (instance == null) {
             instance = new DatabaseConnection();

@@ -1,5 +1,8 @@
 package org.egibide.models;
 
+/**
+ * Vincula a una socia con una partida e indica si resultó ganadora.
+ */
 public class Participante {
     private int id;
     private boolean ganadora;
@@ -7,6 +10,12 @@ public class Participante {
     private Partida partida;
     private Socia socia;
 
+    /**
+     * Crea un registro de participación.
+     *
+     * @param id       identificador de la participación
+     * @param ganadora {@code true} si la participante ganó la partida
+     */
     public Participante(int id, boolean ganadora) {
         this.id = id;
         this.ganadora = ganadora;

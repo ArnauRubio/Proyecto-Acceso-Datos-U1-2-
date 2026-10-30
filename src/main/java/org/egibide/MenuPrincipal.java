@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+/**
+ * Ventana de navegación hacia la gestión de socias, juegos y partidas.
+ */
 public class MenuPrincipal {
     public JPanel panelMenu;
     private JButton buttonSocias;
@@ -16,6 +19,13 @@ public class MenuPrincipal {
     private JButton buttonPartidas;
     private JTextArea TAInfo;
 
+    /**
+     * Crea el menú principal y conecta sus botones con las pantallas de gestión.
+     *
+     * @param all_socias   socias cargadas para compartir con las pantallas
+     * @param all_partidas partidas cargadas para compartir con las pantallas
+     * @param all_juegos   juegos cargados para compartir con las pantallas
+     */
     public MenuPrincipal(List<Socia> all_socias, List<Partida> all_partidas, List<Juego> all_juegos) {
 
 

@@ -16,12 +16,18 @@ import org.egibide.models.Socia;
 
 import java.util.List;
 
+/**
+ * Implementación del repositorio de socias y carga de sus relaciones.
+ */
 public class SociaRepositoryImpl implements SociaRepository {
 
     private AsociacionDao asociacionDao = new AsociacionDaoImpl();
     private SociaDao sociaDao = new SociaDaoImpl();
     private ParticipanteDao participanteDao = new ParticipanteDaoImpl();
 
+    /**
+     * Recupera la socia junto con su asociación y sus participaciones.
+     */
     @Override
     public Socia getSocia(int id_socia) {
         Socia socia = sociaDao.getSocia(id_socia);

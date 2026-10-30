@@ -1,6 +1,7 @@
 package org.egibide.idao;
 
 import org.egibide.dao.ParticipanteDao;
+import org.egibide.models.Partida;
 import org.egibide.models.Participante;
 import org.egibide.models.Socia;
 import org.egibide.utils.DatabaseConnection;
@@ -8,11 +9,20 @@ import org.egibide.utils.DatabaseConnection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+/**
+ * Implementa las operaciones SQL de participación y enlaza las relaciones del modelo.
+ */
 public class ParticipanteDaoImpl implements ParticipanteDao {
 
+    /**
+     * Comprueba si existe una participación con el identificador indicado.
+     */
     public boolean participanteExists(int id) {
         String query = "select * from participante where id=?";
         PreparedStatement ps;
@@ -199,5 +209,68 @@ public class ParticipanteDaoImpl implements ParticipanteDao {
             e.printStackTrace();
         }
         return participantes;
+    }
+
+    /**
+     * Enlaza las participaciones cargadas con sus partidas y socias correspondientes.
+     */
+    @Override
+    public void loadParticipants(List<Partida> partidas, List<Socia> socias) throws SQLException {
+        Connection connection = DatabaseConnection.getInstance().getConnection();
+        String idColumn = findColumn(connection, "participante", "id_participante", "id");
+        String sociaColumn = findColumn(connection, "participante", "id_socia_fk", "id_socia");
+        String partidaColumn = findColumn(connection, "participante", "id_partida_fk", "id_partida");
+        String query = "SELECT `" + idColumn + "` AS participant_id, ganadora, `" + sociaColumn
+                + "` AS socia_id, `" + partidaColumn + "` AS partida_id FROM participante";
+        Map<Integer, Socia> sociasPorId = new HashMap<>();
+        Map<Integer, Partida> partidasPorId = new HashMap<>();
+        for (Socia socia : socias) {
+            sociasPorId.put(socia.getId(), socia);
+        }
+        for (Partida partida : partidas) {
+            partidasPorId.put(partida.getId(), partida);
+        }
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Participante participante = new Participante(resultSet.getInt("participant_id"),
+                        resultSet.getBoolean("ganadora"));
+                Socia socia = sociasPorId.get(resultSet.getInt("socia_id"));
+                Partida partida = partidasPorId.get(resultSet.getInt("partida_id"));
+                if (partida == null) {
+                    throw new SQLException("Un participante referencia una partida que no se ha podido cargar.");
+                }
+                if (socia == null) {
+                    throw new SQLException("Un participante referencia una socia que no se ha podido cargar.");
+                }
+                participante.setSocia(socia);
+                participante.setPartida(partida);
+                partida.getJugadoras().add(participante);
+                if (participante.isGanadora()) {
+                    partida.getGanadoras().add(participante);
+                }
+                socia.getParticipaciones().add(participante);
+            }
+        }
+    }
+
+    /**
+     * Busca en la tabla la primera columna existente entre los nombres candidatos.
+     */
+    private String findColumn(Connection connection, String table, String... candidates) throws SQLException {
+        List<String> columnNames = new ArrayList<>();
+        try (ResultSet columns = connection.getMetaData().getColumns(connection.getCatalog(), null, table, null)) {
+            while (columns.next()) {
+                columnNames.add(columns.getString("COLUMN_NAME"));
+            }
+        }
+        for (String candidate : candidates) {
+            for (String actualName : columnNames) {
+                if (candidate.equalsIgnoreCase(actualName)) {
+                    return actualName;
+                }
+            }
+        }
+        throw new SQLException("No se encontró una columna compatible para " + table + ".");
     }
 }

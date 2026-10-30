@@ -4,7 +4,7 @@ import org.egibide.models.Juego;
 import org.egibide.models.Participante;
 import org.egibide.models.Partida;
 import org.egibide.models.Socia;
-import org.egibide.utils.DatabaseRelations;
+import org.egibide.idao.PartidaDaoImpl;
 import org.egibide.utils.ModTabla_GesPartidas;
 
 import javax.swing.*;
@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Pantalla Swing para crear, modificar, filtrar y eliminar partidas.
+ */
 public class Partidas {
     private JTable table1;
     private JButton buttonEditar;
@@ -33,9 +36,17 @@ public class Partidas {
     private final List<Partida> allPartidas;
     private final List<Juego> allJuegos;
     private final List<Socia> allSocias;
+    private final PartidaDaoImpl partidaDao = new PartidaDaoImpl();
     private final ModTabla_GesPartidas tableModel;
     private final TableRowSorter<ModTabla_GesPartidas> sorter;
 
+    /**
+     * Inicializa la tabla y los controles con las entidades compartidas de la aplicación.
+     *
+     * @param allPartidas partidas que se muestran y mantienen
+     * @param allJuegos   juegos que pueden asociarse a una partida
+     * @param allSocias   socias que pueden participar en una partida
+     */
     public Partidas(List<Partida> allPartidas, List<Juego> allJuegos, List<Socia> allSocias) {
         this.allPartidas = allPartidas;
         this.allJuegos = allJuegos;
@@ -52,7 +63,7 @@ public class Partidas {
                 Partida partida = editarDatosPartida(null);
                 if (partida != null) {
                     try {
-                        DatabaseRelations.savePartida(partida, true);
+                        partidaDao.savePartida(partida, true);
                     } catch (java.sql.SQLException ex) {
                         mostrarError("No se pudo guardar la partida y sus participantes: " + ex.getMessage());
                         return;
@@ -78,7 +89,7 @@ public class Partidas {
                 Partida cambios = editarDatosPartida(seleccionada);
                 if (cambios != null) {
                     try {
-                        DatabaseRelations.savePartida(cambios, false);
+                        partidaDao.savePartida(cambios, false);
                     } catch (java.sql.SQLException ex) {
                         mostrarError("No se pudieron guardar los cambios de la partida: " + ex.getMessage());
                         return;
@@ -119,7 +130,7 @@ public class Partidas {
                         JOptionPane.YES_NO_OPTION);
                 if (respuesta == JOptionPane.YES_OPTION) {
                     try {
-                        DatabaseRelations.deletePartida(seleccionada);
+                        partidaDao.deletePartida(seleccionada);
                     } catch (java.sql.SQLException ex) {
                         mostrarError("No se pudo borrar la partida: " + ex.getMessage());
                         return;
@@ -148,6 +159,11 @@ public class Partidas {
         ButtonFiltrar.setText("Filtrar");
     }
 
+    /**
+     * Obtiene la partida seleccionada en la tabla.
+     *
+     * @return partida seleccionada o null si no hay ninguna fila seleccionada
+     */
     private Partida partidaSeleccionada() {
         int selectedRow = table1.getSelectedRow();
         if (selectedRow < 0) {
@@ -156,6 +172,12 @@ public class Partidas {
         return allPartidas.get(table1.convertRowIndexToModel(selectedRow));
     }
 
+    /**
+     * Solicita los datos de una partida nueva o edita una partida existente.
+     *
+     * @param partidaOriginal partida cuyos valores se muestran inicialmente, o null al crear
+     * @return partida con los cambios o null si se cancela la edición
+     */
     private Partida editarDatosPartida(Partida partidaOriginal) {
         if (allJuegos.isEmpty()) {
             mostrarError("Añade al menos un juego antes de crear una partida.");
@@ -166,7 +188,7 @@ public class Partidas {
         juegos.setRenderer(new DefaultListCellRenderer() {
             @Override
             public java.awt.Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                                    boolean isSelected, boolean cellHasFocus) {
+                                                                   boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 setText(value instanceof Juego ? ((Juego) value).getNombre() : "");
                 return this;
@@ -184,7 +206,7 @@ public class Partidas {
         participantes.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public java.awt.Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                                    boolean isSelected, boolean cellHasFocus) {
+                                                                   boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 Socia socia = (Socia) value;
                 setText(socia.getId() + " - " + socia.getNombre() + " " + socia.getApellidos());
@@ -215,7 +237,9 @@ public class Partidas {
             participantes.setSelectedIndices(indicesSeleccionados.stream().mapToInt(Integer::intValue).toArray());
             ganadoras.setSelectedIndices(indicesGanadoras.stream().mapToInt(Integer::intValue).toArray());
         }
-
+/**
+ * Mini formulario para editar partidas
+ */
         JPanel formulario = new JPanel(new GridLayout(0, 2, 5, 5));
         formulario.add(new JLabel("Juego:"));
         formulario.add(juegos);
@@ -280,6 +304,13 @@ public class Partidas {
         return null;
     }
 
+    /**
+     * Convierte una fecha introducida en formato ISO {@code yyyy-MM-dd}.
+     *
+     * @param texto fecha que se va a validar y convertir
+     * @return fecha interpretada
+     * @throws ParseException si la fecha no respeta el formato o no existe
+     */
     private Date parseFecha(String texto) throws ParseException {
         SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
         formato.setLenient(false);
@@ -291,6 +322,9 @@ public class Partidas {
         return fecha;
     }
 
+    /**
+     * Calcula un ID de partida superior al mayor ID actualmente cargado.
+     */
     private int siguienteId() {
         int idMaximo = 0;
         for (Partida partida : allPartidas) {
@@ -299,6 +333,15 @@ public class Partidas {
         return idMaximo + 1;
     }
 
+    /**
+     * Construye la lista de participantes, reutilizando registros existentes cuando es posible.
+     *
+     * @param socias          socias seleccionadas como participantes
+     * @param ganadoras       socias seleccionadas como ganadoras
+     * @param partidaOriginal partida anterior, si se está editando
+     * @param partida         partida a la que se asignarán las participaciones
+     * @return participaciones con sus referencias y estado de victoria configurados
+     */
     private List<Participante> crearParticipantes(List<Socia> socias, List<Socia> ganadoras,
                                                   Partida partidaOriginal, Partida partida) {
         List<Participante> participantes = new ArrayList<>();
@@ -314,6 +357,9 @@ public class Partidas {
         return participantes;
     }
 
+    /**
+     * Busca en la partida la participación correspondiente a una socia.
+     */
     private Participante buscarParticipante(Partida partida, Socia socia) {
         if (partida == null) {
             return null;
@@ -326,6 +372,9 @@ public class Partidas {
         return null;
     }
 
+    /**
+     * Calcula un ID de participación superior al mayor ID cargado.
+     */
     private int siguienteIdParticipante() {
         int idMaximo = 0;
         for (Partida partida : allPartidas) {
@@ -336,6 +385,9 @@ public class Partidas {
         return idMaximo + 1;
     }
 
+    /**
+     * Completa las referencias de cada participante y las añade a la socia correspondiente.
+     */
     private void vincularParticipantes(Partida partida) {
         for (Participante participante : partida.getJugadoras()) {
             participante.setPartida(partida);
@@ -346,6 +398,9 @@ public class Partidas {
         }
     }
 
+    /**
+     * Elimina de las socias las referencias a participantes de la partida.
+     */
     private void desvincularParticipantes(Partida partida) {
         for (Participante participante : partida.getJugadoras()) {
             Socia socia = participante.getSocia();
@@ -355,6 +410,9 @@ public class Partidas {
         }
     }
 
+    /**
+     * Aplica el filtro seleccionado: disponibilidad, juego, fecha u hora.
+     */
     private void aplicarFiltro() {
         String filtro = String.valueOf(comboBoxFiltroPartidas.getSelectedItem());
         if ("Disponibles".equals(filtro)) {

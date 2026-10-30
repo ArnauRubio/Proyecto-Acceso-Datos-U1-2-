@@ -17,12 +17,18 @@ import org.egibide.models.Socia;
 
 import java.util.List;
 
+/**
+ * Implementación del repositorio que completa las relaciones de cada participación.
+ */
 public class ParticipanteRepositoryImpl implements ParticipanteRepository {
 
     private SociaDao sociaDao = new SociaDaoImpl();
     private ParticipanteDao participanteDao = new ParticipanteDaoImpl();
     private PartidaDao partidaDao = new PartidaDaoImpl();
 
+    /**
+     * Recupera la participación junto con la socia y la partida relacionadas.
+     */
     @Override
     public Participante getParticipante(int id_participante) {
         Participante participante = participanteDao.getParticipante(id_participante);
